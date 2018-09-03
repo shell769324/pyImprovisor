@@ -65,7 +65,7 @@ class Bank:
     chords = []
     if(quality in ["M", "M7", "7"]):
       chords.append(self.transpose(MAJOR_T, degree))
-    elif(quality == "M7"):
+    if(quality == "M7"):
       chords.append(self.transpose(MAJOR_SEV, degree))
       chords.append(self.transpose(MINOR_T, degree + ITV["M3"]))
       chords.append(self.transpose(MINOR_SEV, degree + ITV["M3"]))
@@ -95,3 +95,10 @@ class Bank:
     quality = chord.quality
     degree = chord.degree
     licks = []
+    if(quality in ["M", "M7", "7"]):
+      licks.append(self.transpose([4, 5, 6, 7], degree))
+      licks.append(self.transpose([7, 9, 12], degree))
+      licks.append(self.transpose([4, 7, 9, 12], degree))
+    if(quality == "M7"):
+      licks.append(self.transpose([4, 5, 7, 8, 7, 5, 4], degree))
+      licks.append(self.transpose([7, 8, 10, 11, 10, 8, 7], degree))
