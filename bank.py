@@ -97,8 +97,19 @@ class Bank:
     licks = []
     if(quality in ["M", "M7", "7"]):
       licks.append(self.transpose([4, 5, 6, 7], degree))
+      licks.append(self.transpose([7, 6, 5, 4], degree))
       licks.append(self.transpose([7, 9, 12], degree))
       licks.append(self.transpose([4, 7, 9, 12], degree))
-    if(quality == "M7"):
+    if(quality in ["M7", "7"]):
       licks.append(self.transpose([4, 5, 7, 8, 7, 5, 4], degree))
       licks.append(self.transpose([7, 8, 10, 11, 10, 8, 7], degree))
+    if(quality in ["m7", "7"]):
+      licks.append(self.transpose([12, 10, 7], degree))
+    if(quality == "m7"):
+      licks.append(self.transpose([12, 6, 5, 3, 0], degree))
+      licks.append(self.transpose([6, 7, 10, 12, 10, 7], degree))
+      licks.append(self.transpose([0, 3, 5, 6, 5, 3], degree))
+    if(quality == "7"):
+      licks.append(self.transpose([0, 1, 4, 7, 10], degree))
+      licks.append(self.transpose([8, 7, 4, 0], degree))
+      licks.append(self.transpose([20, 16, 12, 10], degree))

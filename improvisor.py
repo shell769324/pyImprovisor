@@ -2,6 +2,7 @@ import math
 #from midiutil import MIDIFile
 from bank import Bank
 from chord import Chord
+from phrase import Phrase
 
 OCTAVE = 12
 
@@ -13,6 +14,8 @@ class Improvisor:
     self.banks = {}
     self.chords = []
     self.phrases = []
+    self.patterns = []
+    self.createPatterns()
 
   """
   Return the pitch of a note symbol
@@ -39,6 +42,10 @@ class Improvisor:
     return result
 
   """
+  Create a bank of rhythmic patterns
+  """
+
+  """
   Convert a list of chord symbols to a a list of Chord objects
   Store the list of Chords as chords
   @param chords: a list of chord symbols
@@ -51,7 +58,7 @@ class Improvisor:
 
   """
   Find out where each phrase begins and end
-  @return: a list of list of Chords
+  Set phrases as a list of list of chords
   """
   def deconstructor(self):
     # Determine the content of each phrase
@@ -83,6 +90,20 @@ class Improvisor:
       self.banks[chord.name] = Bank(chord)
 
   """
+  Called after phrases are set.
+  Add the posts of a phrase: the start and the end.
+  Posts will be used to guide the generation of notes between them
+  """
+  def setPosts(self):
+    return 42
+
+  """
+  Generate notes between posts
+  """
+  def fillPosts(selfs):
+    return 42
+
+  """
   Generate the midi file that only contains the chord
   """
   def pureChordsFile(self):
@@ -98,8 +119,8 @@ class Improvisor:
     self.tempo = tempo
     self.sheetIntepretor(chords)
     self.deconstructor()
-    self.pureChordsFile()
     self.expandBanks()
+    self.setPosts()
 
   def printChords(self):
     for chord in self.chords:
