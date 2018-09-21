@@ -16,6 +16,7 @@ class Improvisor:
     self.phrases = []
     self.patterns = []
     self.createPatterns()
+    self.tempo = 100
 
   """
   Return the pitch of a note symbol
@@ -44,6 +45,8 @@ class Improvisor:
   """
   Create a bank of rhythmic patterns
   """
+  def createPatterns(self):
+    return 42
 
   """
   Convert a list of chord symbols to a a list of Chord objects
@@ -107,7 +110,7 @@ class Improvisor:
   Generate the midi file that only contains the chord
   """
   def pureChordsFile(self):
-    a = 0
+    return 42
 
   """
   Generate 1) a midi file that only contains the chords
@@ -115,7 +118,7 @@ class Improvisor:
   @param chords: a list of tuples of chord name and duration
   @param tempo: tempo of the solo
   """
-  def generator(self, chords, tempo):
+  def generator(self, chords, tempo = 100):
     self.tempo = tempo
     self.sheetIntepretor(chords)
     self.deconstructor()
