@@ -135,7 +135,8 @@ class rhythm:
 
 	def generatePiano(self):
 		Result = []
-		resultNum = [] #what quarternotes appear in this duration
+		resultNum = []
+		resultNum = 0 * 27
 		n = round(1/self.duration)
 		if(self.br == True):
 			self.cor = list(Correlation)
@@ -143,13 +144,35 @@ class rhythm:
 		for i in range(1, n):
 			if(self.QuarterIndex(self, i) == 0):
 				prev = 19
+			summation = 0.0
+			for j in range(1,26):
+				summation += self.cor[prev][j]
+			normalize = []
+			normalize.append(0.0)
+			cumulative = []
+			cumulative.append(0.0)
+			for k in range(1,26):
+				normalize.append(self.cor[prev][k]/summation)
+				cumulative.append(cumulative[k-1] + normalize[k])
+
 					#randomize according to the row of self.cor[prev]
 					#assign the result of randomization to prev
-			else:
-					#randomize according to the row of self.cor[prev]
-					#(the previous quarternote)
+			randomizer = random.uniform(0, 1)
+			k = 1
+			while(cumulative[k] < randomizer):
+				k += 1
+			k %= 27
+			#assert k is the index of the randomized result
+			resultNum[k] = 1
+			prev = k
+			Result.append(RhyBank[k])
 		if(self.br == True):
 			#decrease the numbers in columns (column index not in resultNum) in self.cor
+			for i in range(1, 26):
+				for j in range(1, 26):
+					if resultNum[j] == 0:
+						self.cor[i][j] *= self.cor[i][j]
+		return Result
 
 
 
@@ -263,8 +286,6 @@ class rhythm:
 
 	def generateRhythm(self):
 		if (self.line == 1):
-			self.generateBass(self)
-			return
+			return self.generateBass()
 		elif(self.line == 0):
-			self.generatePiano(self)
-			return
+			return self.generatePiano()
