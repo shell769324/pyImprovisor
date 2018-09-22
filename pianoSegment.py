@@ -53,10 +53,15 @@ class PianoSegment:
 
   """
   Check stable notes and key notes in downbeats
+  self.chord.degree in 0-11 
   """
   def countDownBeatsNotes(self, pit):
-    return 42
-
+    count = 0
+    for i in range(len(pit)):
+      relativeDeg = ((pit[i] % 12) - self.chord.degree) % 12
+      if relativeDeg = 0 or 4 or 7 or 11:
+        count = count + 1
+    return count
 
   """
   Score the new phrase based on
