@@ -16,7 +16,6 @@ class Improvisor:
     self.chords = []
     self.phrases = []
     self.patterns = []
-    self.createPatterns()
     self.tempo = 100
     self.genre = "Bebop"
 
@@ -93,6 +92,16 @@ class Improvisor:
     self.phrases = phrases
 
   """
+  Connect all phrases into one list of tuple
+  @return the list of tuple
+  """
+  def connect(self):
+    connected = []
+    for phrase in self.phrases:
+      connected.extend(phrase.res)
+    return connected
+
+  """
   Expand the bank that maps chord name to an object that stores
   all chords, scales and licks that may be useful for improvisation
   """
@@ -121,6 +130,7 @@ class Improvisor:
     self.sheetIntepretor(chords)
     self.expandBanks()
     self.deconstructor()
+    self.connect()
 
   def printChords(self):
     for chord in self.chords:

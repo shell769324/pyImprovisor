@@ -129,4 +129,7 @@ class Phrase:
   pitch, relative time, duration and volume
   """
   def connectSegments(self):
-    return 42
+    connected = []
+    for seg in self.pianoSegments):
+      connected.extend(seg.res)
+    self.connected = connected

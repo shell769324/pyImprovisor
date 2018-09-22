@@ -2,6 +2,7 @@ from tkinter import *
 
 import MidiConverter
 import copy
+from improvisor import Improvisor
 
 
 # def draw(canvas, width, height):
@@ -33,7 +34,7 @@ allChords = ["A*m7", NONE, NONE, NONE, NONE, NONE, NONE, NONE,
 tempo=140
 songTitle="New_song0"
 inputs = []
-
+improv = Improvisor()
 
 def compileInputs(allChords):
 	tempChords=copy.copy(allChords)
@@ -94,6 +95,7 @@ class Buttons(object):
 		self.ButtonType=ButtonType
 		self.mod=None	 				#Show what affiliations a tone has
 		self.aff=aff					#Affiliation to a tone, only extension options have this
+		# Initialize improvisor
 
 
 	@staticmethod						#used to initialize the button class when switching to another chord box.
@@ -315,8 +317,6 @@ def init(data):
 	BosaNovaButton=Buttons(40, 0, (740, 600), "BosaNova", ButtonType="Genre")
 
 
-
-
 def pointInGrid(x, y, data):
 	# return True if (x, y) is inside the grid defined by data.
 	return ((data.margin <= x <= (data.width*2)/3-data.margin) and
@@ -354,12 +354,14 @@ def getCellBounds(row, col, data):
 def mousePressed(event, data):
 
 
+
 	# if on the renderpage and we pressed the playing position, play music 
 	if data.renderflag == True:
 		if ((100 < event.x < 200) and (500 < event.y < 600)):
 			A=MidiConverter.MidiConverter(tempo,0,0,1)     #First create the class, then initialize it, then add notes as you want, then write them. 
 			A.initialize()
-			A.addNotes(xxxxxxx)	#midi info from bobby
+			improv.generator(input)
+			A.addNotes(improv.connect())	#midi info from bobby
 			A.writeFiles(songTitle+".mid")
 			MidiConverter.Play(songTitle+".mid")
 	else:
