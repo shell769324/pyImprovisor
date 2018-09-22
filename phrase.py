@@ -16,7 +16,7 @@ BLOCK_FREQ = lambda x : BLOCK_BASIC[x] + random.randint(-2, 2)
 
 class Phrase:
 
-  def __init__(self, chords, banks, rhythmBank, dynamics, genre, dur, register):
+  def __init__(self, chords, banks, rhythmBank, dynamics, genre, dur, lastEnd):
     self.chords = chords
     self.banks = banks
     self.rhythmBank = rhythmBank
@@ -28,7 +28,7 @@ class Phrase:
     self.setPostPiano()
     self.setSegmentsPiano()
     self.connectSegments()
-    self.register = register
+    self.lastEnd = lastEnd
 
   """
   Set the basic rhythms of piano and bass, used by the first segment
@@ -84,13 +84,26 @@ class Phrase:
     typeOption3 = ["second"]
     typeOption = typeOption1 * 3 + typeOption2 * 2 + typeOption3
     num = random.randint(0, len(typeOption) - 1)
+    prevDeg = 0 # Relative degree of the [0, 12) of the previous chord
+    prevPost = self.lastEnd # The absolute degree of the previous chord
+    res = 0
     for chord in self.chords:
-      pianoSegments.append(PianoSegment((chord.getPost(typeOption[num]) + chord.degree) % 12,
-                                        self.pianoPitchType, self.rhythmBank, self.unitLength,
+      higher = (chord.degree + 12 - prevDeg) % 12 + prevPost
+      lower = (chord.degree + 12 - prevDeg) % 12 + prevPost - 12
+      res = 0 # The actual absolute degree of the post of the current segment
+      if(higher >= 84):
+        res = lower
+      elif(lower <= 48):
+        res = higher
+      else:
+        res = lower if random.randint(0, 1) == 0 else higher
+      pianoSegments.append(PianoSegment(res, self.pianoPitchType, self.rhythmBank, self.unitLength,
                                         self.genre, self.dynamics, self.banks, chord))
-      # Mod 12 to make things standard
+      # Prep for the next iteration
+      prevDeg = chord.degree
+      prevPost = res
     self.pianoSegments = pianoSegments
-
+    self.lastEnd = res
 
   """
   For the piano part
