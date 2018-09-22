@@ -1,4 +1,4 @@
-from Tkinter import *
+from tkinter import *
 
 # def draw(canvas, width, height):
 #     canvas.create_rectangle(0,0,150,150, fill="yellow")
@@ -24,9 +24,6 @@ from Tkinter import *
 allChords = ["Am7", NONE, NONE, NONE, NONE, NONE, NONE, NONE,
 			"Cm7", NONE, NONE, NONE, NONE, NONE, NONE, "F7",
 			"BbM7", NONE, "Bbn7", "Eb7", "AbM7", NONE, "Abm7", "Db7",]
-
-
-
 
 
 ####################################
@@ -79,7 +76,7 @@ class Buttons(object):
 						Buttons.keyEx.on=False
 						Buttons.keyEx=self       #If the button is a key and is not the current key, it's 
 						self.on=True             #then switched to this button.
-						if Buttons.ShFlEx != None:    
+						if Buttons.ShFlEx != None:
 							Buttons.ShFlEx.on=False
 							Buttons.ShFlEx=None
 					else:
@@ -132,6 +129,16 @@ def init(data):
 	#SharpButton9
 	#SharpButton11
 	#FlatButton13
+	#SharpButton5
+	#FlatButton5
+
+	#Button5
+	#Button7
+	#Button9
+	#Button11
+	#Button13
+	#ButtonM
+	#Buttonm
 
 def pointInGrid(x, y, data):
 	# return True if (x, y) is inside the grid defined by data.
@@ -174,6 +181,7 @@ def mousePressed(event, data):
 		data.selection = (-1, -1)
 	else:
 		data.selection = (row, col)
+	
 	for button in Buttons.allButton: #Check buttons status
 		button.detectButton(event.x,event.y)
 
