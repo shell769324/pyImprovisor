@@ -69,16 +69,18 @@ class Buttons(object):
 	ShFlEx=None #Indicate whether there is already a sharp/flat button on
 	ProEx=None
 	Mod=[]
-	def __init__(self,size,shape,location,text,ButtonType="Key",on=False):
+	def __init__(self,size,shape,location,text,ButtonType="Key",on=False,color="red",aff=None):
 		Buttons.allButton.append(self)
 		self.on=on          # indicate if it's on
 		self.size=size      #size of it. 
 		self.shape=shape    #1 is a ball and 0 is a square
 		self.loc=location   #a tuple in the form (x,y)
 		self.text=text      #the text being displayed on it.
-		self.color="red"
+		self.color=color
 		self.valid=True
 		self.ButtonType=ButtonType
+		self.mods=[]		#Show what affiliations a tone has
+		self.aff=aff		#Affiliation to a tone, only extension options have this
 
 	def drawButton(self,canvas,data): #draw a button
 		if self.on:
@@ -92,9 +94,8 @@ class Buttons(object):
 				self.loc[1]-self.size,self.loc[0]+self.size,self.loc[1]+self.size,fill=color)
 		canvas.create_text(self.loc[0],self.loc[1],text=self.text)
 	
-	def detectButton(self,x,y): #Detect whether the button is pressed, if pressed, turn it on.
+	def detectButton(self,x,y,data): #Detect whether the button is pressed, if pressed do something:
 		if abs(self.loc[0]-x)<self.size and abs(self.loc[1]-y)<self.size:
-
 			if self.ButtonType=="Key":
 				if Buttons.keyEx!=self:
 					if Buttons.keyEx!=None:  		#The case of changing a key button
@@ -139,6 +140,7 @@ class Buttons(object):
 				else:
 					self.on=False
 					Buttons.ProEx=None
+			elif self.ButtonType==
 
 #####################################
 # Grid functions
@@ -164,20 +166,21 @@ def init(data):
 
 	FlatButtonKey=Buttons(20,1,(900,500+1*50),"b",ButtonType="ShFl")
 	SharpButtonKey=Buttons(20,1,(900,500+2*50),"#",ButtonType="ShFl")
-	#FlatButton9=Buttons()
-	#SharpButton9
-	#SharpButton11
-	#FlatButton13
-	#SharpButton5
-	#FlatButton5
+	SharpButton5=Buttons(20,1,(1000,50+0*70),"#",ButtonType="Tone")
+	FlatButton5=Buttons(20,1,(1100,50+0*70),"b",ButtonType="Tone")
+	FlatButton9=Buttons(20,1,(1100,50+2*70),"b",ButtonType="Tone")
+	SharpButton9=Buttons(20,1,(1000,50+2*70),"#",ButtonType="Tone")
+	SharpButton11=Buttons(20,1,(1000,50+3*70),"#",ButtonType="Tone")
+	FlatButton13=Buttons(20,1,(1100,50+4*70),"b",ButtonType="Tone")
 
-	#5Button
-	#7Button
-	#9Button
-	#11Button
-	#13Button
-	#MButton
-	#mButton
+
+	Button5=Buttons(25,1,(1050,50+0*70),"5",ButtonType="Tone")
+	Button7=Buttons(25,1,(1050,50+1*70),"7",ButtonType="Tone")
+	Button9=Buttons(25,1,(1050,50+2*70),"9",ButtonType="Tone")
+	Button11=Buttons(25,1,(1050,50+3*70),"11",ButtonType="Tone")
+	Button13=Buttons(25,1,(1050,50+4*70),"13",ButtonType="Tone")
+	ButtonM=Buttons(25,1,(1050,50+5*70),"M",ButtonType="Quality")
+	Buttonm=Buttons(25,1,(1050,50+6*70),"m",ButtonType="Quality")
 
 def pointInGrid(x, y, data):
 	# return True if (x, y) is inside the grid defined by data.
