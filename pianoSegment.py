@@ -126,9 +126,6 @@ class PianoSegment:
   """
   return a list of notes of line notes type
   """
-  def findDiff(List,a,b):
-    
-    return bLoc-aLoc
 
   def lineNotes(self,rhythm):
     a=self.nextNote
