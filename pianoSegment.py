@@ -85,7 +85,7 @@ class PianoSegment:
         i += 1
         while(i < len(rhythm) and rhythm[i - 1] == rhythm[i]):
           i += 1
-        res.append((start * 120 / 96, (i - start) * 120 / 96))
+        res.append((start * 120 / 96, (i - start) * 120 / 96, rhythm[start]))
         i -= 1
       i += 1
     return res
@@ -106,7 +106,6 @@ class PianoSegment:
     for i in range(len(noteTime)):
       for j in range(len(block)):
         res.append((block[i], noteTime[i][j]))
-
 
   """
   return a list of notes of chordal notes type
