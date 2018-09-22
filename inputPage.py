@@ -1,5 +1,5 @@
-from tkinter import *
 
+from tkinter import *
 # def draw(canvas, width, height):
 #     canvas.create_rectangle(0,0,150,150, fill="yellow")
 
@@ -17,17 +17,37 @@ from tkinter import *
 
 # runDrawing(800, 1200)
 
+
+
+
 ####################################
 # Variables
 ####################################
 
 allChords = ["Am7", NONE, NONE, NONE, NONE, NONE, NONE, NONE,
 			"Cm7", NONE, NONE, NONE, NONE, NONE, NONE, "F7",
-			"BbM7", NONE, "Bbn7", "Eb7", "AbM7", NONE, "Abm7", "Db7",]
+			"BbM7", NONE, "Bbm7", "Eb7", "AbM7", NONE, "Abm7", "Db7",]
+
+inputs = []
 
 
+def compileInputs(allChords):
+	thisChord = ""
+	count = 0
+	for chord in allChords:
+		if chord != NONE:
+			count = count + 1
+			if thisChord != "": 
+				inputs.append((thisChord, 0.5*count))
+			thisChord = chord
+			count = 0
+		else:
+			count = count + 1
+	return True
 
+compileInputs(allChords)
 
+print(inputs)
 
 ####################################
 # Color Scheme
@@ -44,59 +64,81 @@ color5 = "#D0E9FF"
 # Button Class
 #####################################
 class Buttons(object):
-    allButton=[]
-    keyEx=None #Indicate whether there is already a key button on. If there is, the button take the place.
-    ShFlEx=None #Indicate whether there is already a sharp/flat button on
-    Mod=[]
-    def __init__(self,size,shape,location,text,ButtonType="Key",on=False):
-        Buttons.allButton.append(self)
-        self.on=on          # indicate if it's on
-        self.size=size      #size of it. 
-        self.shape=shape    #1 is a ball and 0 is a square
-        self.loc=location   #a tuple in the form (x,y)
-        self.text=text      #the text being displayed on it.
-        self.color="red"
-        self.valid=True
-        self.ButtonType=ButtonType
+	allButton=[]
+	keyEx=None #Indicate whether there is already a key button on. If there is, the button take the place.
+	ShFlEx=None #Indicate whether there is already a sharp/flat button on
+	ProEx=None
+	Mod=[]
+	def __init__(self,size,shape,location,text,ButtonType="Key",on=False):
+		Buttons.allButton.append(self)
+		self.on=on          # indicate if it's on
+		self.size=size      #size of it. 
+		self.shape=shape    #1 is a ball and 0 is a square
+		self.loc=location   #a tuple in the form (x,y)
+		self.text=text      #the text being displayed on it.
+		self.color="red"
+		self.valid=True
+		self.ButtonType=ButtonType
 
-    def drawButton(self,canvas,data): #draw a button
-        if self.on:
-            color=self.color
-        else: color = "white"
-        if self.shape==1:
-            canvas.create_oval(self.loc[0]-self.size,
-                self.loc[1]-self.size,self.loc[0]+self.size,self.loc[1]+self.size,fill=color)
-        elif self.shape==0:
-            canvas.create_rectangle(self.loc[0]-self.size,
-                self.loc[1]-self.size,self.loc[0]+self.size,self.loc[1]+self.size,fill=color)
-        canvas.create_text(self.loc[0],self.loc[1],text=self.text)
-    
-    def detectButton(self,x,y): #Detect whether the button is pressed, if pressed, turn it on.
-        if abs(self.loc[0]-x)<self.size and abs(self.loc[1]-y)<self.size:
-            if self.ButtonType=="Key":
-                if Buttons.keyEx!=self:
-                    if Buttons.keyEx!=None:
-                        Buttons.keyEx.on=False
-                        Buttons.keyEx=self       #If the button is a key and is not the current key, it's 
-                        self.on=True              #then switched to this button.
-                    else:
-                        Buttons.keyEx=self
-                        self.on=True
-                else:
-                    self.on=False
-                    Buttons.keyEx=None
-            elif self.ButtonType=="ShFl":
-                if Buttons.ShFlEx!=self:
-                    if Buttons.ShFlEx!=None:
-                        Buttons.ShFlEx.on=False
-                        Buttons.ShFlEx=self       #If the button is a flat/sharp and is not the current key, it's 
-                        self.on=True              #then switched to this button.
-                    else:
-                        Buttons.ShFlEx=self
-                        self.on=True
-                else:
-                    self.on=False
-                    Buttons.ShFlEx=None
+	def drawButton(self,canvas,data): #draw a button
+		if self.on:
+			color=self.color
+		else: color = "white"
+		if self.shape==1:
+			canvas.create_oval(self.loc[0]-self.size,
+				self.loc[1]-self.size,self.loc[0]+self.size,self.loc[1]+self.size,fill=color)
+		elif self.shape==0:
+			canvas.create_rectangle(self.loc[0]-self.size,
+				self.loc[1]-self.size,self.loc[0]+self.size,self.loc[1]+self.size,fill=color)
+		canvas.create_text(self.loc[0],self.loc[1],text=self.text)
+	
+	def detectButton(self,x,y): #Detect whether the button is pressed, if pressed, turn it on.
+		if abs(self.loc[0]-x)<self.size and abs(self.loc[1]-y)<self.size:
+
+			if self.ButtonType=="Key":
+				if Buttons.keyEx!=self:
+					if Buttons.keyEx!=None:  		#The case of changing a key button
+						Buttons.keyEx.on=False
+						Buttons.keyEx=self       #If the button is a key and is not the current key, it's 
+						self.on=True              #then switched to this button.
+						if Buttons.ShFlEx!=None:    #If previously chose a shfl button, abort the change
+							Buttons.ShFlEx.on=False
+							Buttons.ShFlEx=None
+					else:
+						Buttons.keyEx=self
+						self.on=True
+				else:
+					if Buttons.ShFlEx!=None:
+							Buttons.ShFlEx.on=False
+							Buttons.ShFlEx=None
+					self.on=False
+					Buttons.keyEx=None
+			elif self.ButtonType=="ShFl":
+				if Buttons.ShFlEx!=self:
+					if Buttons.ShFlEx!=None:
+						Buttons.ShFlEx.on=False
+						Buttons.ShFlEx=self       #If the button is a flat/sharp and is not the current key, it's 
+						self.on=True              #then switched to this button.
+					else:
+						Buttons.ShFlEx=self
+						self.on=True
+				else:
+					self.on=False
+					Buttons.ShFlEx=None
+			elif self.ButtonType=="Proceed":
+				if Buttons.ProEx!=self:
+					if Buttons.ProEx!=None:
+						Buttons.ProEx.on=False
+						Buttons.ProEx=self       #If the button is a proceed button and is not the current key, it's 
+						self.on=True              #then switched to this button.
+					else:
+						Buttons.ProEx=self
+						self.on=True
+						RUN_FLAG = False
+						print ("run flag is false!")
+				else:
+					self.on=False
+					Buttons.ProEx=None
 
 #####################################
 # Grid functions
@@ -136,13 +178,6 @@ def init(data):
 	#13Button
 	#MButton
 	#mButton
-	AKeyButton=Buttons(30,0,(800,600-0*50),"A")
-	BKeyButton=Buttons(30,0,(800,600-1*50),"B")
-	CKeyButton=Buttons(30,0,(800,600-2*50),"C")
-	DKeyButton=Buttons(30,0,(800,600-3*50),"D")
-	EKeyButton=Buttons(30,0,(800,600-4*50),"E")
-	FKeyButton=Buttons(30,0,(800,600-5*50),"F")
-	GKeyButton=Buttons(30,0,(800,600-6*50),"G")
 
 def pointInGrid(x, y, data):
 	# return True if (x, y) is inside the grid defined by data.
@@ -158,7 +193,7 @@ def getCell(x, y, data):
 	gridHeight = data.height/2 - 2*data.margin
 	cellWidth  = gridWidth / (data.cols)
 	cellHeight = gridHeight / (data.rows)
-	row = (y - data.margin) // cellHeight
+	row = ((y - 50) - data.margin) // cellHeight 
 	col = (x - data.margin) // cellWidth
 	# triple-check that we are in bounds
 	row = min(data.rows-1, max(0, row))
@@ -174,19 +209,21 @@ def getCellBounds(row, col, data):
 	rowHeight = gridHeight / data.rows
 	x0 = data.margin + col * columnWidth
 	x1 = data.margin + (col+1) * columnWidth
-	y0 = data.margin + row * rowHeight
-	y1 = data.margin + (row+1) * rowHeight
+	y0 = data.margin + row * rowHeight 
+	y1 = data.margin + (row+1) * rowHeight 
 	return (x0, y0, x1, y1)
 
 def mousePressed(event, data):
+	for button in Buttons.allButton: #Check buttons status
+		button.detectButton(event.x,event.y)
+	if (not pointInGrid(event.x, event.y, data)):
+		return
 	(row, col) = getCell(event.x, event.y, data)
 	# select this (row, col) unless it is selected
 	if (data.selection == (row, col)):
 		data.selection = (-1, -1)
 	else:
 		data.selection = (row, col)
-	for button in Buttons.allButton: #Check buttons status
-		button.detectButton(event.x,event.y)
 
 def keyPressed(event, data):
 	pass
@@ -198,16 +235,16 @@ def redrawAll(canvas, data):
 		for col in range(data.cols):
 			(x0, y0, x1, y1) = getCellBounds(row, col, data)
 			fill = color5 if (data.selection == (row, col)) else "white"
-			canvas.create_rectangle(x0, y0, x1, y1, fill=fill, outline=color3, dash=(1,5))
+			canvas.create_rectangle(x0, y0 + 50, x1, y1 + 50, fill=fill, outline=color3, dash=(1,5))
 
 	# The first extra bar line as start
-	canvas.create_line(15, 15, 15, 125, fill=color2, width=2)
+	canvas.create_line(15, 65, 15, 175, fill=color2, width=2)
 
 	# draw barlines
 	for row in range(data.rows):
 		for col in range(data.cols//2 + 1):
 			(x0, y0, x1, y1) = getCellBounds(row, col, data)
-			canvas.create_line(x0*2, y0+10, x0*2, y1-10, fill=color2, width=2)
+			canvas.create_line(x0*2, y0+10 + 50, x0*2, y1-10 + 50, fill=color2, width=2)
 
 	# show symbols
 	for row in range(data.rows):
@@ -220,16 +257,16 @@ def redrawAll(canvas, data):
 				quality = text[2:] if optionalFlat == True else text[1:]
 
 				# display the bass
-				canvas.create_text((x0 + x1)/2, (y0 + y1)/2, text=bass+("b" if optionalFlat==True else ""), 
-					font=("Tahoma", "30"), fill=color2)
+				canvas.create_text((x0 + x1)/2 , (y0 + y1)/2 + 50, text=bass+("b" if optionalFlat==True else ""), 
+					font=("Comic Sans MS", "30"), fill=color2)
 				# display the quality
-				canvas.create_text((x0 + x1)/2 + 20, (y0 + y1)/2 - 10, text=quality, 
-					font=("Tahoma", "15"), fill=color2)
+				canvas.create_text((x0 + x1)/2 + 20, (y0 + y1)/2 - 10 + 50, text=quality, 
+					font=("Comic Sans MS", "15"), fill=color2)
 
 
 
-	canvas.create_text(150, 450, text="New song 0",
-					   font=("Tahoma", "30"), fill=color2)
+	canvas.create_text(360, 25, text="New song 0",
+					   font=("Comic Sans MS", "30"), fill=color2)
 	for button in Buttons.allButton:
 		button.drawButton(canvas,data)
 
@@ -238,7 +275,11 @@ def redrawAll(canvas, data):
 # use the run function as-is
 ####################################
 
-def run(width=400, height=600):
+def runInputPage(width=400, height=600):
+
+	global RUN_FLAG
+	RUN_FLAG = True
+
 	def redrawAllWrapper(canvas, data):
 		canvas.delete(ALL)
 		canvas.create_rectangle(0, 0, data.width, data.height,
@@ -276,7 +317,12 @@ def run(width=400, height=600):
 	redrawAll(canvas, data)
 	# and launch the app
 
-	root.mainloop()  # blocks until window is closed
+	if RUN_FLAG==False:
+		root.destroy()
+
+	root.mainloop()  # blocks until window closed
+
 	print("bye!")
 
-run(1200, 800)
+
+runInputPage(1200, 800)
