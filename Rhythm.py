@@ -1,4 +1,5 @@
 import random
+import math
 
 # with attack at the begining of this 1/4 beat
 #4 * 1/16
@@ -57,6 +58,9 @@ DURP2 = [1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 DURP3 = [1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 DURP4 = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0]
 
+RhyBank = [[], EVEN1, EVEN2, EVEN3, MIX1, MIX2, TRIP1, DOT1, DURA1, DURA2, DURA3,
+DURA4, DURA5, DURA6, DURA7, DURA8, PAUSE1, PAUSE2, PAUSE3, PAUSE4, SYNC1, PAUSE5,
+PAUSE6, DURP1, DURP2, DURP3, DURP4]
 GenDic = {"Ballad":1, "Bebop":2, "Blues":3, "Bossa Nova":4}
 
 """
@@ -70,8 +74,11 @@ RhyDic = {"EVEN1":1, "EVEN2":2, "EVEN3":3, "MIX1":4, "MIX2":5, "TRIP1":6, "DOT1"
  "DURA1":8, "DURA2":9, "DURA3":10, "DURA4":11, "DURA5":12, "DURA6":13,
 "DURA7":14, "DURA8":15, "PAUSE1":16, "PAUSE2":17, "PAUSE3":18, "PAUSE4":19,"SYNC1":20,
  "PAUSE5":21, "PAUSE6":22, "DURP1":23, "DURP2":24, "DURP3":25, "DURP4":26}
-
-
+"""
+@test RhyBank and RhyDic
+print(RhyBank[RhyDic["DURP4"]][0])
+print(RhyBank[RhyDic["DURP4"]][23])
+"""
 
 class rhythm:
 	def __init__(self, Duration, Genre, Line, Dynamix):
@@ -94,23 +101,87 @@ class rhythm:
 
 	def bassBossa(self):
 
-	def generateBass(self):
-		if(GenDic[self.genre] == 4): #Bossa Nova
-			self.bassBossa(self)
+	def bassBallad(self):
+		randomizer = random.randint(1, 100)
+		if randomizer <= 57:
+			return list(EVEN2)
+		elif randomizer > 57 and randomizer <= 62:
+			return list(EVEN3)
+		elif randomizer > 62 and randomizer <= 67:
+			return list(MIX1)
+		elif randomizer > 67 and randomizer <= 80:
+			return list(TRIP)
+		elif randomizer > 80 and randomizer <= 85:
+			return list(DURA2)
+		elif randomizer > 85 and randomizer <= 90:
+			return list(DURA3)
 		else:
-			Result = []
-			for (every quarternote in this duration)
-				if (QuarterIndex < 2)
-				Result.append(randomized even stuff)
+			return list(DURA6)
+	def bassBop(self):
+		randomizer = random.randint(1, 100)
+		if randomizer <= 57:
+			return list(EVEN2)
+		elif randomizer > 57 and randomizer <= 62:
+			return list(EVEN3)
+		elif randomizer > 62 and randomizer <= 67:
+			return list(MIX1)
+		elif randomizer > 67 and randomizer <= 80:
+			return list(DOT1)
+		elif randomizer > 80 and randomizer <= 90:
+			return list(DURA2)
+		elif randomizer > 90 and randomizer <= 95:
+			return list(DURA3)
+		else:
+			return list(DURA7)
+	def bassBlues(self):
+		randomizer = random.randint(1, 100)
+		if randomizer <= 70:
+			return list(EVEN2)
+		elif randomizer > 70 and randomizer <= 80:
+			return list(EVEN3)
+		elif randomizer > 80 and randomizer <= 85:
+			return list(MIX1)
+		elif randomizer > 85 and randomizer <= 90:
+			return list(DURA1)
+		elif randomizer > 90 and randomizer <= 95:
+			return list(DURA2)
+		else:
+			return list(PAUSE2)
+
+	def generateBass(self):
+		Result = []
+		if(GenDic[self.genre] == 4): #Bossa Nova
+			Result.append(self.bassBossa(self))
+		else:
+			n = round(1/self.duration)
+			for index in range(1, n): 
+				if (QuarterIndex(self, index) == 0):
+					#this quarternote is the first quarternote of this chord
+					randomizer = random.randint(1, 100)
+					if randomizer <= 65:
+						Result.append(list(EVEN2))
+					elif randomizer > 65 and randomizer <= 95:
+						Result.append(list(EVEN3))
+					else:
+						Result.append(list(MIX1))
+				elif (QuarterIndex(self, index) == 1):
+					#this quarternote is the 3rd/5th/7th quarternote of this chord
+					randomizer = random.randint(1,100)
+					if randomizer <= 80:
+						Result.append(list(EVEN2))
+					elif randomizer > 80 and randomizer <= 90:
+						Result.append(list(EVEN3))
+					else:
+						Result.append(list(MIX1))
 				else
 					if (GenDic[self.genre] == 1): #Ballad
-						Result.append(randomized even and trip stuff)
+						Result.append(self.bassBallad)
 					elif (GenDic[self.genre] == 2): #Bebop
-						Result.append(randomized even and doted stuff)
+						Result.append(self.bassBop)
 					elif (GenDic[self.genre] == 3): #Blues
-						Result.append(randomize even stuff)
+						Result.append(self.bassBlues)
 			return Result 
-
+#pseudocode ends
 
 	def generateRhythm(self):
 		if (self.line == 1):

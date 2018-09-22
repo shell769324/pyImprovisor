@@ -1,11 +1,10 @@
 class Segment:
-  def __init__(self, rhythm, notes):
-    self.rhythm = rhythm
-    self.notes = notes
+  def __init__(self, post):
+    self.post = post
 
   """
-    Calculate the density of a rhythm pattern
-    @return: the density of a rhythm
+  Calculate the density of a rhythm pattern
+  @return: the density of a rhythm
   """
   def calculateDensity(self, rhythm):
     count = 0

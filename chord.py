@@ -88,3 +88,33 @@ class Chord:
       stableNotes.put((3, 10))
     # second
     stableNotes.put((4, 2))
+    self.stableNotes = stableNotes
+
+  """
+  Get a random post 
+  @param type: must be either root, third, fifth, seventh or second
+  """
+  def getPost(self, type):
+    if(type == "third"):
+      if(self.quality in ["M", "M6", "M7"]):
+        return 4
+      else:
+        return 3
+    elif(type == "fifth"):
+      if(self.quality == "m7b5" or 6 in self.keyNotes):
+        return 6
+      elif(8 in self.keyNotes):
+        return 8
+      else:
+        return 7
+    elif(type == "seventh"):
+      if(self.quality in ["M", "M6", "M7"]):
+        return 11
+      else:
+        return 10
+    elif(type == "root"):
+      return 0
+    elif(type == "second"):
+      return 2
+    else:
+      raise ValueError("invalid post type!")
