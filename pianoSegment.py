@@ -1,4 +1,5 @@
 import random
+import bank
 
 TRIAL = 3
 class PianoSegment:
@@ -116,8 +117,20 @@ class PianoSegment:
   """
   return a list of notes of line notes type
   """
-  def lineNotes(self):
-    self.
+  def findDiff(list,a,b):
+    if abs(a-b)>12:
+      return False
+    if 
+
+    return abs(aLoc-bLoc)
+
+  def lineNotes(self,rhythm):
+    notes=getAllNoteTime(rhythm)
+    canUse = self.banks[self.chord.name]
+    DiffNoteCanUse=findDiff(canUse,self.nextNote,self.post)
+
+
+    return stuff
 
 
   """
