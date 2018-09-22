@@ -93,7 +93,7 @@ class Buttons(object):
                 self.loc[1]-self.size,self.loc[0]+self.size,self.loc[1]+self.size,fill=color)
         canvas.create_text(self.loc[0],self.loc[1],text=self.text)
     
-    def detectButton(self,x,y): #Detect whether the button is pressed, if pressed, turn it on.
+    def detectButton(self,x,y, data): #Detect whether the button is pressed, if pressed, turn it on.
         if abs(self.loc[0]-x)<self.size and abs(self.loc[1]-y)<self.size:
 
             if self.ButtonType=="Key":
@@ -129,8 +129,8 @@ class Buttons(object):
                     else:
                         Buttons.ProEx=self
                         self.on=True
-                        RUN_FLAG = False
-                        print ("run flag is false!")
+                        data.renderflag = True
+                        print ("render flag is true!")
                 else:
                     self.on=False
                     Buttons.ProEx=None
@@ -188,7 +188,7 @@ def getCellBounds(row, col, data):
 
 def mousePressed(event, data):
 	for button in Buttons.allButton: #Check buttons status
-		button.detectButton(event.x,event.y)
+		button.detectButton(event.x,event.y, data)
 	if (not pointInGrid(event.x, event.y, data)):
 		return
 	(row, col) = getCell(event.x, event.y, data)
@@ -203,11 +203,16 @@ def keyPressed(event, data):
 
 def redrawAll(canvas, data):
 
+	# Draw the play button
+	if data.renderflag == True:
+		canvas.create_oval(100, 500, 200, 600, fill=color3, outline=color3)
+		canvas.create_polygon(130, 520, 130, 580, 185, 550, fill=color2, outline=color1)
+
 	# draw grid of cells
 	for row in range(data.rows):
 		for col in range(data.cols):
 			(x0, y0, x1, y1) = getCellBounds(row, col, data)
-			fill = color5 if (data.selection == (row, col)) else "white"
+			fill = color4 if (data.selection == (row, col)) else color5
 			canvas.create_rectangle(x0, y0 + 50, x1, y1 + 50, fill=fill, outline=color3, dash=(1,5))
 
 	# The first extra bar line as start
@@ -237,11 +242,13 @@ def redrawAll(canvas, data):
 					font=("Comic Sans MS", "15"), fill=color2)
 
 
-
 	canvas.create_text(360, 25, text="New song 0",
 					   font=("Comic Sans MS", "30"), fill=color2)
-	for button in Buttons.allButton:
-		button.drawButton(canvas,data)
+
+	if data.renderflag == False:
+		for button in Buttons.allButton:
+			button.drawButton(canvas,data)
+
 
 
 ####################################
@@ -250,13 +257,11 @@ def redrawAll(canvas, data):
 
 def runInputPage(width=400, height=600):
 
-	global RUN_FLAG
-	RUN_FLAG = True
 
 	def redrawAllWrapper(canvas, data):
 		canvas.delete(ALL)
 		canvas.create_rectangle(0, 0, data.width, data.height,
-								fill='white', width=0)
+								fill=color5, width=0)
 		redrawAll(canvas, data)
 		canvas.update()    
 
@@ -273,11 +278,12 @@ def runInputPage(width=400, height=600):
 	data = Struct()
 	data.width = width
 	data.height = height
+	data.renderflag = False
 	root = Tk()
 	root.resizable(width=False, height=False) # prevents resizing window
 	init(data)
 	# create the root and the canvas
-	canvas = Canvas(root, width=data.width, height=data.height)
+	canvas = Canvas(root, width=data.width, height=data.height, bg=color5)
 	canvas.configure(bd=0, highlightthickness=0)
 	canvas.pack()
 
@@ -289,9 +295,6 @@ def runInputPage(width=400, height=600):
 							keyPressedWrapper(event, canvas, data))
 	redrawAll(canvas, data)
 	# and launch the app
-
-	if RUN_FLAG==False:
-		root.destroy()
 
 	root.mainloop()  # blocks until window closed
 
