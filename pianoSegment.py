@@ -146,26 +146,74 @@ class PianoSegment:
 
     if DNCU > 0: GG=1
     else: GG=-1 
-
+    
     if abs(DNCU) >= len(notes):
-      for i in range(len(notes)):
-        notes[i]=(listTemp(listTemp.index(a)+GG*i),notes[i][0],notes[1],notes[2])
-      return notes
-    else:
-      if abs(DNCU)-len(notes)==1:
         for i in range(len(notes)):
-          notes[i]=(listTemp(listTemp.index(a)+GG*i),notes[i][0],notes[1],notes[2])
+            notes[i]=(listTemp[aLoc+GG*i],notes[i][0],notes[i][1],notes[i][2])
         return notes
-      elif abs(DNCU)-len(notes)==2:
-        for i in range(len(notes-1)):
-          notes[i]=(listTemp[listTemp.index(a)+GG*i],notes[i][0],notes[1],notes[2])
-        notes[-1]=(listTemp[bLoc+1],notes[-1])
-        return notes
-      elif abs(DNCU)-len(notes)==3:
-        for i in range(len(notes-1)):
-          notes[i]=(listTemp[listTemp.index(a)+GG*i],notes[i][0],notes[1],notes[2])
-        notes[-1]=(listTemp[bLoc+1],notes[-1])
-        return notes
+        
+    else:
+        if len(notes)-abs(DNCU) ==1:
+            for i in range(len(notes)-1):
+                notes[i]=(listTemp[aLoc+GG*i],notes[i][0],notes[i][1],notes[i][2])
+            notes[-1]=(listTemp[bLoc+GG*1],notes[-1][0],notes[-1][1],notes[-1][2])
+            return notes
+            
+        elif len(notes)-abs(DNCU)==2:
+            for i in range(len(notes)-1):
+                notes[i]=(listTemp[aLoc+GG*i],notes[i][0],notes[i][1],notes[i][2])
+            notes[-1]=(listTemp[bLoc+GG*1],notes[-1][0],notes[-1][1],notes[-1][2])
+            return notes
+            
+        elif len(notes)-abs(DNCU)==3:
+            for i in range(len(notes)-2):
+                notes[i]=(listTemp[aLoc+GG*i],notes[i][0],notes[i][1],notes[i][2])
+            notes[-1]=(listTemp[bLoc-GG*1],notes[-1][0],notes[-1][1],notes[-1][2])
+            notes[-2]=(listTemp[bLoc+GG*1],notes[-1][0],notes[-2][1],notes[-2][2])
+            return notes
+        
+        elif len(notes)-abs(DNCU)==4:
+            for i in range(len(notes)-3):
+                notes[i]=(listTemp[aLoc+GG*i],notes[i][0],notes[i][1],notes[i][2])
+            notes[-1]=(listTemp[bLoc-GG*1],notes[-1][0],notes[-1][1],notes[-1][2])
+            notes[-2]=(listTemp[bLoc],notes[-1][0],notes[-2][1],notes[-2][2])
+            notes[-3]=(listTemp[bLoc+GG*1],notes[-3][0],notes[-3][1],notes[-3][2])
+            return notes
+            
+        elif len(notes)-abs(DNCU)==5:
+            for i in range(len(notes)-3):
+                notes[i]=(listTemp[aLoc+GG*i],notes[i][0],notes[i][1],notes[i][2])
+            notes[-1]=(listTemp[bLoc-GG*1],notes[-1][0],notes[-1][1],notes[-1][2])
+            notes[-2]=(listTemp[bLoc],notes[-1][0],notes[-2][1],notes[-2][2])
+            notes[-3]=(listTemp[bLoc+GG*1],notes[-3][0],notes[-3][1],notes[-3][2])
+            notes[-4]=(listTemp[bLoc+GG*1],notes[-4][0],notes[-4][1],notes[-4][2])
+            return notes
+        
+        elif len(notes)-abs(DNCU)==6:
+            for i in range(len(notes)-3):
+                notes[i]=(listTemp[aLoc+GG*i],notes[i][0],notes[i][1],notes[i][2])
+            notes[-1]=(listTemp[bLoc-GG*1],notes[-1][0],notes[-1][1],notes[-1][2])
+            notes[-2]=(listTemp[bLoc],notes[-1][0],notes[-2][1],notes[-2][2])
+            notes[-3]=(listTemp[bLoc+GG*1],notes[-3][0],notes[-3][1],notes[-3][2])
+            notes[-4]=(listTemp[bLoc+GG*1],notes[-4][0],notes[-4][1],notes[-4][2])
+            notes[-5]=(listTemp[bLoc+GG*1],notes[-5][0],notes[-5][1],notes[-5][2])
+            return notes
+            
+        elif len(notes)-abs(DNCU)==7:
+            for i in range(len(notes)-3):
+                notes[i]=(listTemp[aLoc+GG*i],notes[i][0],notes[i][1],notes[i][2])
+            notes[-1]=(listTemp[bLoc-GG*1],notes[-1][0],notes[-1][1],notes[-1][2])
+            notes[-2]=(listTemp[bLoc],notes[-1][0],notes[-2][1],notes[-2][2])
+            notes[-3]=(listTemp[bLoc+GG*1],notes[-3][0],notes[-3][1],notes[-3][2])
+            notes[-4]=(listTemp[bLoc+GG*1],notes[-4][0],notes[-4][1],notes[-4][2])
+            notes[-5]=(listTemp[bLoc+GG*1],notes[-5][0],notes[-5][1],notes[-5][2])
+            notes[-6]=(listTemp[bLoc+GG*1],notes[-6][0],notes[-6][1],notes[-6][2])  
+            return notes
+        
+        else:
+            for i in range(len(notes)):
+                notes[i]=(listTemp[aLoc+GG*i],notes[i][0],notes[i][1],notes[i][2])
+            return notes
 
 
 
