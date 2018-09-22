@@ -23,7 +23,7 @@ class Phrase:
     self.dynamics = dynamics
     self.genre = genre
     self.dur = dur
-    self.setBasicHarmony()
+    self.setBasicRhythm()
     self.setPitchTypePiano()
     self.setPostPiano()
     self.setSegmentsPiano()
@@ -34,7 +34,7 @@ class Phrase:
   Set the basic rhythms of piano and bass, used by the first segment
   Set the unit length
   """
-  def setBasicHarmony(self):
+  def setBasicRhythm(self):
     shortest = 0
     for chord in self.chords:
       shortest = min(shortest, chord.dur)
@@ -63,9 +63,11 @@ class Phrase:
   """
   def setPitchTypePiano(self):
     rou = self.calculateDensity(self.basicPianoRhythm)
+    # Calculate the bid of each pitch type
     blockBid = BLOCK_FREQ(rou)
     chordalBid = CHORDAL_FREQ(rou)
     lineBid = LINE_FREQ(rou)
+    # Determine the pitch type to use
     if(blockBid > chordalBid and blockBid > lineBid):
       self.pianoPitchType = "BLOCK"
     elif(chordalBid > lineBid):
@@ -79,15 +81,19 @@ class Phrase:
   """
   def setPostPiano(self):
     pianoSegments = []
+    # Determine which relative degree will be the post
     typeOption1 = ["root", "third"]
     typeOption2 = ["fifth", "seventh"]
     typeOption3 = ["second"]
     typeOption = typeOption1 * 3 + typeOption2 * 2 + typeOption3
     num = random.randint(0, len(typeOption) - 1)
-    prevDeg = 0 # Relative degree of the [0, 12) of the previous chord
-    prevPost = self.lastEnd # The absolute degree of the previous chord
+    # Relative degree of the [0, 12) of the previous chord
+    prevDeg = self.chords[0].degree
+    # The absolute degree of the previous chord
+    prevPost = (self.lastEnd // 12) * 12 + self.chords[0].getPost(typeOption[num])
     res = 0
     for chord in self.chords:
+      # Two options for the next post
       higher = (chord.degree + 12 - prevDeg) % 12 + prevPost
       lower = (chord.degree + 12 - prevDeg) % 12 + prevPost - 12
       res = 0 # The actual absolute degree of the post of the current segment
@@ -96,7 +102,8 @@ class Phrase:
       elif(lower <= 48):
         res = higher
       else:
-        res = lower if random.randint(0, 1) == 0 else higher
+        res = lower if random.randint(0, 1) == 1 else higher
+      # Create a new segment with a post
       pianoSegments.append(PianoSegment(res, self.pianoPitchType, self.rhythmBank, self.unitLength,
                                         self.genre, self.dynamics, self.banks, chord))
       # Prep for the next iteration
