@@ -2,6 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="0b30d86d-8631-44dc-a66e-ba2181425566" name="Default" comment="">
+      <change beforePath="$PROJECT_DIR$/improvisor.py" afterPath="$PROJECT_DIR$/improvisor.py" />
+      <change beforePath="$PROJECT_DIR$/inputPage.py" afterPath="$PROJECT_DIR$/inputPage.py" />
+      <change beforePath="$PROJECT_DIR$/phrase.py" afterPath="$PROJECT_DIR$/phrase.py" />
       <change beforePath="$PROJECT_DIR$/pianoSegment.py" afterPath="$PROJECT_DIR$/pianoSegment.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -13,11 +16,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="improvisor.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="improvisor.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/improvisor.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-458">
-              <caret line="87" column="43" lean-forward="false" selection-start-line="87" selection-start-column="43" selection-end-line="87" selection-end-column="43" />
+            <state relative-caret-position="255">
+              <caret line="17" column="22" lean-forward="false" selection-start-line="17" selection-start-column="22" selection-end-line="17" selection-end-column="22" />
               <folding>
                 <element signature="e#0#11#0" expanded="true" />
               </folding>
@@ -25,11 +28,21 @@
           </provider>
         </entry>
       </file>
+      <file leaf-file-name="inputPage.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/inputPage.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="185">
+              <caret line="364" column="40" lean-forward="false" selection-start-line="364" selection-start-column="40" selection-end-line="364" selection-end-column="40" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
       <file leaf-file-name="phrase.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/phrase.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="357">
-              <caret line="35" column="5" lean-forward="true" selection-start-line="35" selection-start-column="5" selection-end-line="35" selection-end-column="5" />
+            <state relative-caret-position="742">
+              <caret line="134" column="30" lean-forward="true" selection-start-line="134" selection-start-column="30" selection-end-line="134" selection-end-column="30" />
               <folding>
                 <element signature="e#0#13#0" expanded="true" />
               </folding>
@@ -40,7 +53,7 @@
       <file leaf-file-name="bank.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/bank.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-833">
+            <state relative-caret-position="-512">
               <caret line="23" column="0" lean-forward="true" selection-start-line="23" selection-start-column="0" selection-end-line="23" selection-end-column="0" />
               <folding />
             </state>
@@ -50,18 +63,18 @@
       <file leaf-file-name="chord.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/chord.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="657">
-              <caret line="81" column="16" lean-forward="true" selection-start-line="81" selection-start-column="16" selection-end-line="81" selection-end-column="16" />
+            <state relative-caret-position="485">
+              <caret line="96" column="44" lean-forward="true" selection-start-line="96" selection-start-column="44" selection-end-line="96" selection-end-column="44" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="pianoSegment.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="pianoSegment.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/pianoSegment.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="309">
-              <caret line="87" column="77" lean-forward="true" selection-start-line="87" selection-start-column="77" selection-end-line="87" selection-end-column="77" />
+            <state relative-caret-position="2235">
+              <caret line="149" column="34" lean-forward="true" selection-start-line="149" selection-start-column="34" selection-end-line="149" selection-end-column="34" />
               <folding />
             </state>
           </provider>
@@ -81,6 +94,9 @@
       <find>base</find>
       <find>int</find>
       <find>register</find>
+      <find>xxxx</find>
+      <find>_in</find>
+      <find>initia</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -94,8 +110,9 @@
         <option value="$PROJECT_DIR$/bank.py" />
         <option value="$PROJECT_DIR$/chord.py" />
         <option value="$PROJECT_DIR$/segment.py" />
-        <option value="$PROJECT_DIR$/improvisor.py" />
         <option value="$PROJECT_DIR$/phrase.py" />
+        <option value="$PROJECT_DIR$/improvisor.py" />
+        <option value="$PROJECT_DIR$/inputPage.py" />
         <option value="$PROJECT_DIR$/pianoSegment.py" />
       </list>
     </option>
@@ -483,16 +500,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/improvisor.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-458">
-          <caret line="87" column="43" lean-forward="false" selection-start-line="87" selection-start-column="43" selection-end-line="87" selection-end-column="43" />
-          <folding>
-            <element signature="e#0#11#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/pattern.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="150">
@@ -501,9 +508,17 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/chord.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="485">
+          <caret line="96" column="44" lean-forward="true" selection-start-line="96" selection-start-column="44" selection-end-line="96" selection-end-column="44" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/bank.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-833">
+        <state relative-caret-position="-512">
           <caret line="23" column="0" lean-forward="true" selection-start-line="23" selection-start-column="0" selection-end-line="23" selection-end-column="0" />
           <folding />
         </state>
@@ -511,27 +526,37 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/phrase.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="357">
-          <caret line="35" column="5" lean-forward="true" selection-start-line="35" selection-start-column="5" selection-end-line="35" selection-end-column="5" />
+        <state relative-caret-position="742">
+          <caret line="134" column="30" lean-forward="true" selection-start-line="134" selection-start-column="30" selection-end-line="134" selection-end-column="30" />
           <folding>
             <element signature="e#0#13#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/chord.py">
+    <entry file="file://$PROJECT_DIR$/pianoSegment.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="657">
-          <caret line="81" column="16" lean-forward="true" selection-start-line="81" selection-start-column="16" selection-end-line="81" selection-end-column="16" />
+        <state relative-caret-position="2235">
+          <caret line="149" column="34" lean-forward="true" selection-start-line="149" selection-start-column="34" selection-end-line="149" selection-end-column="34" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/pianoSegment.py">
+    <entry file="file://$PROJECT_DIR$/inputPage.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="309">
-          <caret line="87" column="77" lean-forward="true" selection-start-line="87" selection-start-column="77" selection-end-line="87" selection-end-column="77" />
+        <state relative-caret-position="185">
+          <caret line="364" column="40" lean-forward="false" selection-start-line="364" selection-start-column="40" selection-end-line="364" selection-end-column="40" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/improvisor.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="255">
+          <caret line="17" column="22" lean-forward="false" selection-start-line="17" selection-start-column="22" selection-end-line="17" selection-end-column="22" />
+          <folding>
+            <element signature="e#0#11#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

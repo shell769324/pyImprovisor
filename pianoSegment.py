@@ -4,7 +4,7 @@ TRIAL = 3
 class PianoSegment:
   def __init__(self, post, pitchType, rhythmBank, unitLength, genre, dyna, banks, chord):
     self.post = post
-    self.pitchType = pitchType
+    self.pitchType = "BLOCK"
     self.rhythmBank = rhythmBank
     self.rhythms = []
     self.attacks = []
@@ -105,13 +105,22 @@ class PianoSegment:
     noteTime = self.getAllNoteTime(rhythm)
     for i in range(len(noteTime)):
       for j in range(len(block)):
-        res.append((block[i], noteTime[i][j]))
+        res.append((block[i], noteTime[i][0], noteTime[i][1], noteTime[i][2]))
+    return res
 
   """
   return a list of notes of chordal notes type
+  @param rhythm: the rhythm
   """
-  def chordalNotes(self):
-    return 42
+  def chordalNotes(self, rhythm):
+    chord = self.chord
+    canUse = self.banks[chord.name]
+    rightLength = []
+    noteTime = self.getAllNoteTime(rhythm)
+    for i in range(len(canUse.chords)):
+      if(len(canUse.chords[i]) == len(noteTime)):
+        rightLength.append(i)
+
 
   """
   return a list of notes of line notes type
@@ -129,9 +138,9 @@ class PianoSegment:
     self.interval = []
     if(self.prev == None): # The first segment in a phrase
       if(self.pitchType == "BLOCK"):
-
+        return 42
     else: # The second or other segment in a phrase
-
+      return 42
   """
   Finalize decisions
   """
@@ -141,4 +150,3 @@ class PianoSegment:
     if(self.pitchType == "BLOCK"):
       self.res = self.blockChordNotes(self.rhythmBank(self.unitLength, self.genre, False,
                                                       self.dynamics, True))
-    elif(self.pitchType == "LINE"):
