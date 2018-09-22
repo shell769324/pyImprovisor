@@ -1,4 +1,5 @@
 from midiutil import MIDIFile
+import time
 import pygame
 
 class MidiConverter(object):
@@ -33,7 +34,10 @@ A.addNotes(GreenDolphin)
 A.addNotes(GreenDolphinChords)
 A.writeFiles("GreenDolphin1.mid")
 
-Play("GreenDolphin1.mid")
-for i in range(10):
-	print("t=%d"%i)
-	time.sleep(1)
+
+
+
+# Play("GreenDolphin1.mid")
+# for i in range(10):
+# 	print("t=%d"%i)
+# 	time.sleep(1)
