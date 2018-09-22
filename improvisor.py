@@ -77,15 +77,15 @@ class Improvisor:
       chordsInPhrase.append(chord)
       sum += chord.dur
       if (math.isclose(sum, 1) and len(chordsInPhrase) >= 3):
-        phrases.append(Phrase(chordsInPhrase, self.banks, self.rhythmBank, dynamics, self.genre))
+        phrases.append(Phrase(chordsInPhrase, self.banks, self.rhythmBank, dynamics, self.genre, 1))
         chordsInPhrase = []
         sum = 0
       elif(math.isclose(sum, 2) and len(chordsInPhrase) >= 2):
-        phrases.append(Phrase(chordsInPhrase, self.banks, self.rhythmBank, dynamics, self.genre))
+        phrases.append(Phrase(chordsInPhrase, self.banks, self.rhythmBank, dynamics, self.genre, 2))
         chordsInPhrase = []
         sum = 0
       elif(math.isclose(sum, 4)):
-        phrases.append(Phrase(chordsInPhrase, self.banks, self.rhythmBank, dynamics, self.genre))
+        phrases.append(Phrase(chordsInPhrase, self.banks, self.rhythmBank, dynamics, self.genre, 4))
         chordsInPhrase = []
         sum = 0
     self.phrases = phrases
