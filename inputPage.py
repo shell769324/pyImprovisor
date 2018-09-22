@@ -1,5 +1,6 @@
 
-from tkinter import *
+from Tkinter import *
+import MidiConverter
 # def draw(canvas, width, height):
 #     canvas.create_rectangle(0,0,150,150, fill="yellow")
 
@@ -64,83 +65,13 @@ color5 = "#D0E9FF"
 # Button Class
 #####################################
 class Buttons(object):
-<<<<<<< HEAD
-    allButton=[]
-    keyEx=None #Indicate whether there is already a key button on. If there is, the button take the place.
-    ShFlEx=None #Indicate whether there is already a sharp/flat button on
-    ProEx=None
-    Mod=[]
-    def __init__(self,size,shape,location,text,ButtonType="Key",on=False):
-        Buttons.allButton.append(self)
-        self.on=on          # indicate if it's on
-        self.size=size      #size of it. 
-        self.shape=shape    #1 is a ball and 0 is a square
-        self.loc=location   #a tuple in the form (x,y)
-        self.text=text      #the text being displayed on it.
-        self.color="red"
-        self.valid=True
-        self.ButtonType=ButtonType
 
-    def drawButton(self,canvas,data): #draw a button
-        if self.on:
-            color=self.color
-        else: color = "white"
-        if self.shape==1:
-            canvas.create_oval(self.loc[0]-self.size,
-                self.loc[1]-self.size,self.loc[0]+self.size,self.loc[1]+self.size,fill=color)
-        elif self.shape==0:
-            canvas.create_rectangle(self.loc[0]-self.size,
-                self.loc[1]-self.size,self.loc[0]+self.size,self.loc[1]+self.size,fill=color)
-        canvas.create_text(self.loc[0],self.loc[1],text=self.text)
-    
-    def detectButton(self,x,y, data): #Detect whether the button is pressed, if pressed, turn it on.
-        if abs(self.loc[0]-x)<self.size and abs(self.loc[1]-y)<self.size:
-
-            if self.ButtonType=="Key":
-                if Buttons.keyEx!=self:
-                    if Buttons.keyEx!=None:
-                        Buttons.keyEx.on=False
-                        Buttons.keyEx=self       #If the button is a key and is not the current key, it's 
-                        self.on=True              #then switched to this button.
-                    else:
-                        Buttons.keyEx=self
-                        self.on=True
-                else:
-                    self.on=False
-                    Buttons.keyEx=None
-            elif self.ButtonType=="ShFl":
-                if Buttons.ShFl!=self:
-                    if Buttons.ShFlEx!=None:
-                        Buttons.ShFlEx.on=False
-                        Buttons.ShFlEx=self       #If the button is a flat/sharp and is not the current key, it's 
-                        self.on=True              #then switched to this button.
-                    else:
-                        Buttons.ShFlEx=self
-                        self.on=True
-                else:
-                    self.on=False
-                    Buttons.ShFlEx=None
-            elif self.ButtonType=="Proceed":
-            	if Buttons.ProEx!=self:
-                    if Buttons.ProEx!=None:
-                        Buttons.ProEx.on=False
-                        Buttons.ProEx=self       #If the button is a proceed button and is not the current key, it's 
-                        self.on=True              #then switched to this button.
-                    else:
-                        Buttons.ProEx=self
-                        self.on=True
-                        data.renderflag = True
-                        print ("render flag is true!")
-                else:
-                    self.on=False
-                    Buttons.ProEx=None
-=======
 	allButton=[]
 	keyEx=None #Indicate whether there is already a key button on. If there is, the button take the place.
 	ShFlEx=None #Indicate whether there is already a sharp/flat button on
 	ProEx=None
-	Mod=[]
-	def __init__(self,size,shape,location,text,ButtonType="Key",on=False,color="red",aff=None):
+	tones=[]
+	def __init__(self,size,shape,location,text,ButtonType="Key",on=False,color=color4,aff=None,tone=None):
 		Buttons.allButton.append(self)
 		self.on=on          # indicate if it's on
 		self.size=size      #size of it. 
@@ -149,8 +80,9 @@ class Buttons(object):
 		self.text=text      #the text being displayed on it.
 		self.color=color
 		self.valid=True
+		self.tone=tone
 		self.ButtonType=ButtonType
-		self.mods=[]		#Show what affiliations a tone has
+		self.mod=None	 	#Show what affiliations a tone has
 		self.aff=aff		#Affiliation to a tone, only extension options have this
 
 	def drawButton(self,canvas,data): #draw a button
@@ -159,13 +91,16 @@ class Buttons(object):
 		else: color = "white"
 		if self.shape==1:
 			canvas.create_oval(self.loc[0]-self.size,
-				self.loc[1]-self.size,self.loc[0]+self.size,self.loc[1]+self.size,fill=color)
+				self.loc[1]-self.size,self.loc[0]+self.size,self.loc[1]+self.size,
+				fill=color, outline=color1, dash=(1,5))
 		elif self.shape==0:
 			canvas.create_rectangle(self.loc[0]-self.size,
-				self.loc[1]-self.size,self.loc[0]+self.size,self.loc[1]+self.size,fill=color)
-		canvas.create_text(self.loc[0],self.loc[1],text=self.text)
+				self.loc[1]-self.size,self.loc[0]+self.size,self.loc[1]+self.size,
+				fill=color, outline=color1, dash=(1,5))
+		canvas.create_text(self.loc[0],self.loc[1],text=self.text, font=("Comic Sans MS", "15"))
 	
-	def detectButton(self,x,y,data): #Detect whether the button is pressed, if pressed do something:
+
+	def detectButton(self,x,y,data):
 		if abs(self.loc[0]-x)<self.size and abs(self.loc[1]-y)<self.size:
 			if self.ButtonType=="Key":
 				if Buttons.keyEx!=self:
@@ -206,13 +141,38 @@ class Buttons(object):
 					else:
 						Buttons.ProEx=self
 						self.on=True
-						RUN_FLAG = False
-						print ("run flag is false!")
+						data.renderflag = True
+						print ("render flag is True!")
 				else:
 					self.on=False
 					Buttons.ProEx=None
-			elif self.ButtonType==
->>>>>>> f4eac9ece3000b9fd51b02e80b870188105c9117
+
+			elif self.ButtonType=="Tone" and self.tone!=5:
+				if not self.on:
+					Buttons.tones.append(self)
+					self.on=True
+				else:
+					self.on=False
+					Buttons.tones.remove(self)
+					if self.mod!=None:
+						self.mod.on=False
+						self.mod=None
+			elif self.ButtonType=="ShFlTone":
+				if self.aff.mod==None:
+					if self.aff.on == False:
+						Buttons.tones.append(self.aff)
+						self.aff.on=True
+					self.aff.mod=self
+					self.on=True
+				else:
+					if self.aff.mod==self:
+						self.aff.mod=None
+						self.on=False
+					elif self.aff.mod!=self:
+						self.aff.mod.on=False
+						self.aff.mod=self
+						self.on=True
+
 
 #####################################
 # Grid functions
@@ -236,23 +196,25 @@ def init(data):
 	FKeyButton=Buttons(30,0,(900,50+5*70),"F")
 	GKeyButton=Buttons(30,0,(900,50+6*70),"G")
 
+	Button5=Buttons(25,1,(1050,50+0*70),"5",ButtonType="Tone",tone=5,on=True)
+	Button7=Buttons(25,1,(1050,50+1*70),"7",ButtonType="Tone",tone=7)
+	Button9=Buttons(25,1,(1050,50+2*70),"9",ButtonType="Tone",tone=9)
+	Button11=Buttons(25,1,(1050,50+3*70),"11",ButtonType="Tone",tone=11)
+	Button13=Buttons(25,1,(1050,50+4*70),"13",ButtonType="Tone",tone=13)
+	ButtonM=Buttons(25,1,(1050,50+5*70),"M",ButtonType="Quality",aff=7)
+	Buttonm=Buttons(25,1,(1050,50+6*70),"m",ButtonType="Quality",aff=7)
+
 	FlatButtonKey=Buttons(20,1,(900,500+1*50),"b",ButtonType="ShFl")
 	SharpButtonKey=Buttons(20,1,(900,500+2*50),"#",ButtonType="ShFl")
-	SharpButton5=Buttons(20,1,(1000,50+0*70),"#",ButtonType="Tone")
-	FlatButton5=Buttons(20,1,(1100,50+0*70),"b",ButtonType="Tone")
-	FlatButton9=Buttons(20,1,(1100,50+2*70),"b",ButtonType="Tone")
-	SharpButton9=Buttons(20,1,(1000,50+2*70),"#",ButtonType="Tone")
-	SharpButton11=Buttons(20,1,(1000,50+3*70),"#",ButtonType="Tone")
-	FlatButton13=Buttons(20,1,(1100,50+4*70),"b",ButtonType="Tone")
+	SharpButton5=Buttons(20,1,(1000,50+0*70),"#",ButtonType="ShFlTone",aff=Button5)
+	FlatButton5=Buttons(20,1,(1100,50+0*70),"b",ButtonType="ShFlTone",aff=Button5)
+	FlatButton9=Buttons(20,1,(1100,50+2*70),"b",ButtonType="ShFlTone",aff=Button9)
+	SharpButton9=Buttons(20,1,(1000,50+2*70),"#",ButtonType="ShFlTone",aff=Button9)
+	SharpButton11=Buttons(20,1,(1000,50+3*70),"#",ButtonType="ShFlTone",aff=Button11)
+	FlatButton13=Buttons(20,1,(1100,50+4*70),"b",ButtonType="ShFlTone",aff=Button13)
 
-
-	Button5=Buttons(25,1,(1050,50+0*70),"5",ButtonType="Tone")
-	Button7=Buttons(25,1,(1050,50+1*70),"7",ButtonType="Tone")
-	Button9=Buttons(25,1,(1050,50+2*70),"9",ButtonType="Tone")
-	Button11=Buttons(25,1,(1050,50+3*70),"11",ButtonType="Tone")
-	Button13=Buttons(25,1,(1050,50+4*70),"13",ButtonType="Tone")
-	ButtonM=Buttons(25,1,(1050,50+5*70),"M",ButtonType="Quality")
-	Buttonm=Buttons(25,1,(1050,50+6*70),"m",ButtonType="Quality")
+	# The proceed button
+	ProceedButton=Buttons(50, 1, (1050, 660), "Proceed!", ButtonType="Proceed")
 
 def pointInGrid(x, y, data):
 	# return True if (x, y) is inside the grid defined by data.
@@ -289,8 +251,15 @@ def getCellBounds(row, col, data):
 	return (x0, y0, x1, y1)
 
 def mousePressed(event, data):
+
+	# if on the renderpage and we pressed the playing position, play music 
+	if data.renderflag == True:
+		if ((100 < event.x < 200) and (500 < event.y < 600)):
+			MidiConverter.Play("GreenDolphin1.mid")
+
 	for button in Buttons.allButton: #Check buttons status
 		button.detectButton(event.x,event.y, data)
+
 	if (not pointInGrid(event.x, event.y, data)):
 		return
 	(row, col) = getCell(event.x, event.y, data)
@@ -347,6 +316,7 @@ def redrawAll(canvas, data):
 	canvas.create_text(360, 25, text="New song 0",
 					   font=("Comic Sans MS", "30"), fill=color2)
 
+	# The chord construction buttons only show up when renderflag is false
 	if data.renderflag == False:
 		for button in Buttons.allButton:
 			button.drawButton(canvas,data)
