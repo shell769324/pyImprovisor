@@ -139,7 +139,6 @@ class Buttons(object):
 			if 'm' in ChordSym:
 				if ChordSym[-1]=="7":
 					ChordSym=ChordSym[0:-1]+item.text
-
 		allChords[int(num)]=ChordSym
 
 
@@ -360,11 +359,11 @@ def mousePressed(event, data):
 			A=MidiConverter(tempo,0,0,1)     #First create the class, then initialize it, then add notes as you want, then write them. 
 			A.initialize()
 			A.addNotes(xxxxxxx)	#midi info from bobby
-			A.writeFiles(songTitle)
+			A.writeFiles(songTitle+".mid")
 			MidiConverter.Play(songTitle+".mid")
-
-	for button in Buttons.allButton: #Check buttons status
-		button.detectButton(event.x,event.y, data)
+	else:
+		for button in Buttons.allButton: #Check buttons status
+			button.detectButton(event.x,event.y, data)
 	
 	if (not pointInGrid(event.x, event.y, data)):
 		return
