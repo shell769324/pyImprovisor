@@ -67,7 +67,7 @@ class Improvisor:
   Set phrases as a list of list of chords
   @param dynamics: the average dynamics value
   """
-  def deconstructor(self, dynamics):
+  def deconstructor(self, dynamics=90):
     # Determine the content of each phrase
     chords = self.chords
     phrases = []

@@ -27,6 +27,7 @@ class Bank:
     self.chord = chord
     self.createScales()
     self.createChords()
+    self.createLicks()
 
   def transpose(self, notes, interval, up = True):
     interval %= 12
@@ -113,3 +114,4 @@ class Bank:
       licks.append(self.transpose([0, 1, 4, 7, 10], degree))
       licks.append(self.transpose([8, 7, 4, 0], degree))
       licks.append(self.transpose([20, 16, 12, 10], degree))
+    self.licks = licks
