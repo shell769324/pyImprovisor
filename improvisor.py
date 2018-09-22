@@ -73,21 +73,23 @@ class Improvisor:
     phrases = []
     sum = 0 # Once sum hits 2, append the phrase to phrases
     chordsInPhrase = []
-    for chord in chords:
+    prevPost = 60
+    for i in range(len(chords)):
+      chord = chords[i]
       chordsInPhrase.append(chord)
       sum += chord.dur
       if (math.isclose(sum, 1) and len(chordsInPhrase) >= 3):
-        phrases.append(Phrase(chordsInPhrase, self.banks, self.rhythmBank, dynamics, self.genre, 1))
-        chordsInPhrase = []
-        sum = 0
+        phrases.append(Phrase(chordsInPhrase, self.banks, self.rhythmBank,
+                              dynamics, self.genre, 1, prevPost))
       elif(math.isclose(sum, 2) and len(chordsInPhrase) >= 2):
-        phrases.append(Phrase(chordsInPhrase, self.banks, self.rhythmBank, dynamics, self.genre, 2))
-        chordsInPhrase = []
-        sum = 0
+        phrases.append(Phrase(chordsInPhrase, self.banks, self.rhythmBank,
+                              dynamics, self.genre, 2, prevPost))
       elif(math.isclose(sum, 4)):
-        phrases.append(Phrase(chordsInPhrase, self.banks, self.rhythmBank, dynamics, self.genre, 4))
-        chordsInPhrase = []
-        sum = 0
+        phrases.append(Phrase(chordsInPhrase, self.banks, self.rhythmBank,
+                              dynamics, self.genre, 4, prevPost))
+      prevPost = phrases[-1].lastEnd
+      chordsInPhrase = []
+      sum = 0
     self.phrases = phrases
 
   """
@@ -113,7 +115,7 @@ class Improvisor:
   @param tempo: tempo of the solo
   @param genre: a string specifying the genre
   """
-  def generator(self, chords, tempo = 100, genre = "bebop"):
+  def generator(self, chords, tempo=100, genre="bebop"):
     self.tempo = tempo
     self.genre = genre
     self.sheetIntepretor(chords)

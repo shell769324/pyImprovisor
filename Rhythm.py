@@ -83,16 +83,25 @@ print(RhyBank[RhyDic["DURP4"]][23])
 Correlation = []
 row = []
 Correlation += [row]
-for i in range(1, 26):
+for i in range(1, 27):
+	row = []
 	row.append(0.0)
-	for j in range(1, 26):
+	for j in range(1, 27):
 		if RhyBank[i][23] == 0 and RhyBank[j][0] == 1: #Pause to Tie cannot occur
 			row.append(0.0)
 			continue
 		if i <= 6 and (j <= 6 or j == 8 or j == 23):
-			row.append(0.99)
+			row.append(0.95)
 		else:
 			row.append(0.7)
+	Correlation += [row]
+
+"""
+test Correlation
+for i in range(1, 26):
+	for j in range(1, 26):
+		print(Correlation[i][j])
+"""
 
 class rhythm:
 	def __init__(self, Duration, Genre, Line, Dynamix, BR):
@@ -103,10 +112,10 @@ class rhythm:
 		self.dynamix = Dynamix #int
 		self.br = BR #boolean
 		self.cor = list(Correlation)
-		self.generateRhythm(self)
+		#self.generateRhythm()
 
 	def QuarterIndex(self, index):
-		if (self.duration == 1):
+		if (index == 1):
 			return 0 #First quarternote of this chord-phrase
 		elif (index % 2 == 1):
 			return 1 #Odd quarternote
@@ -114,13 +123,20 @@ class rhythm:
 			return 2 #Even quarternote
 
 	def assignDynamix(self, original):
+		#adjust dynamix of attacks according to upbeat/downbeat
+		#print(original)
 		assigned = []
-		for i in range(len(original)):
-			if original[i] == 0:
+		original2 = []
+		for i in original:
+			for j in i:
+				original2.append(j)
+
+		for i in range(len(original2)):
+			if original2[i] == 0:
 				assigned.append(0)
-			elif original[i] == 1:
+			elif original2[i] == 1:
 				assigned.append(-1)
-			elif original[i] == 2:
+			elif original2[i] == 2:
 				dyn = self.dynamix
 				if i % 12 == 0:
 					dyn += 3
@@ -130,28 +146,39 @@ class rhythm:
 					assigned.append(127)
 				else:
 					assigned.append(dyn)
+
+		#print(assigned)
 		return assigned
 
 
 	def generatePiano(self):
-		Result = []
+		Result = [] # the actual rhythm
 		resultNum = []
-		resultNum = 0 * 27
-		n = round(1/self.duration)
+		resultNum = [0] * 27
+		# if this call is for BR, whether the quarternotes appeared in the BR
+
+		n = round(self.duration/0.25)
+		#print("n: ")
+		#print(n)
+		#print("\n")
 		if(self.br == True):
 			self.cor = list(Correlation)
+			#if this is for BR, initialize self.cor
 		prev = 19
-		for i in range(1, n):
-			if(self.QuarterIndex(self, i) == 0):
+		for i in range(1, n + 1):
+			#print("I'm in a loop\n")
+			if(self.QuarterIndex(i) == 0):
 				prev = 19
+
+			#weighted randomization
 			summation = 0.0
-			for j in range(1,26):
+			for j in range(1, 27):
 				summation += self.cor[prev][j]
 			normalize = []
 			normalize.append(0.0)
 			cumulative = []
 			cumulative.append(0.0)
-			for k in range(1,26):
+			for k in range(1, 27):
 				normalize.append(self.cor[prev][k]/summation)
 				cumulative.append(cumulative[k-1] + normalize[k])
 
@@ -166,40 +193,42 @@ class rhythm:
 			resultNum[k] = 1
 			prev = k
 			Result.append(RhyBank[k])
+			#print(Result)
 		if(self.br == True):
 			#decrease the numbers in columns (column index not in resultNum) in self.cor
-			for i in range(1, 26):
-				for j in range(1, 26):
+			for i in range(1, 27):
+				for j in range(1, 27):
 					if resultNum[j] == 0:
 						self.cor[i][j] *= self.cor[i][j]
+		#print(Result)
 		return Result
 
 
 
 	def bassBossa(self):
 		Res = []
-		n = round(1/self.duration)
-		for index in range(1, n)
-			if(self.QuarterIndex(self,index) == 0):
-				Res.append(list(DOT1))
-			elif (self.QuarterIndex(self,index) == 1):
+		n = round(self.duration/0.25)
+		for index in range(1, n + 1):
+			if(self.QuarterIndex(index) == 0):
+				Res += list(DOT1)
+			elif (self.QuarterIndex(index) == 1):
 				randomizer = random.randint(1, 100)
 				if randomizer <= 25:
-					Res.append(list(DURA2))
+					Res += list(DURA2)
 				elif randomizer > 25 and randomizer <= 50:
-					Res.append(list(PAUSE2))
+					Res += list(PAUSE2)
 				elif randomizer > 50 and randomizer <= 75:
-					Res.append(list(DURA3))
+					Res += list(DURA3)
 				else:
-					Res.append(list(DURA7))
-			elif(self.QuarterIndex(self,index) == 2):
+					Res += list(DURA7)
+			elif(self.QuarterIndex(index) == 2):
 				randomizer = random.randint(1, 100)
 				if randomizer <= 70:
-					Res.append(list(DOT1))
+					Res += list(DOT1)
 				elif randomizer > 70 and randomizer <= 90:
-					Res.append(list(MIX1))
+					Res += list(MIX1)
 				else:
-					Res.append(list(EVEN2))
+					Res += list(EVEN2)
 		return Res
 
 	def bassBallad(self):
@@ -235,28 +264,37 @@ class rhythm:
 		else:
 			return list(DURA7)
 	def bassBlues(self):
+		Result = []
 		randomizer = random.randint(1, 100)
 		if randomizer <= 70:
-			return list(EVEN2)
+			#return [list(EVEN2)]
+			Result += list(EVEN2)
 		elif randomizer > 70 and randomizer <= 80:
-			return list(EVEN3)
+			#return [list(EVEN3)]
+			Result += list(EVEN3)
 		elif randomizer > 80 and randomizer <= 85:
-			return list(MIX1)
+			#return [list(MIX1)]
+			Result += list(MIX1)
 		elif randomizer > 85 and randomizer <= 90:
-			return list(DURA1)
+			#return [list(DURA1)]
+			Result += list(DURA1)
 		elif randomizer > 90 and randomizer <= 95:
-			return list(DURA2)
+			#return [list(DURA2)]
+			Result += list(DURA2)
 		else:
-			return list(PAUSE2)
+			#return [list(PAUSE2)]
+			Result += list(PAUSE2)
+		return Result
 
 	def generateBass(self):
 		Result = []
 		if(GenDic[self.genre] == 4): #Bossa Nova
-			Result.append(self.bassBossa(self))
+			Result.append(self.bassBossa())
 		else:
-			n = round(1/self.duration)
-			for index in range(1, n): 
-				if (self.QuarterIndex(self, index) == 0):
+			n = round(self.duration/0.25)
+
+			for index in range(1, n + 1): 
+				if (self.QuarterIndex(index) == 0):
 					#this quarternote is the first quarternote of this chord
 					randomizer = random.randint(1, 100)
 					if randomizer <= 65:
@@ -265,7 +303,7 @@ class rhythm:
 						Result.append(list(EVEN3))
 					else:
 						Result.append(list(MIX1))
-				elif (self.QuarterIndex(self, index) == 1):
+				elif (self.QuarterIndex(index) == 1):
 					#this quarternote is the 3rd/5th/7th quarternote of this chord
 					randomizer = random.randint(1,100)
 					if randomizer <= 80:
@@ -274,18 +312,20 @@ class rhythm:
 						Result.append(list(EVEN3))
 					else:
 						Result.append(list(MIX1))
-				else
+				else:
+					#not downbeat
 					if (GenDic[self.genre] == 1): #Ballad
-						Result.append(self.bassBallad)
+						Result.append(self.bassBallad())
 					elif (GenDic[self.genre] == 2): #Bebop
-						Result.append(self.bassBop)
+						Result.append(self.bassBop())
 					elif (GenDic[self.genre] == 3): #Blues
-						Result.append(self.bassBlues)
-			return Result 
-#pseudocode ends
+						Result.append(self.bassBlues())
+		#print("generateBass completed\n")
+		print(Result)
+		return Result 
 
 	def generateRhythm(self):
 		if (self.line == 1):
-			return self.generateBass()
+			return self.assignDynamix(self.generateBass())
 		elif(self.line == 0):
-			return self.generatePiano()
+			return self.assignDynamix(self.generatePiano())
