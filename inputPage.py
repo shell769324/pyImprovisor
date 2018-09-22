@@ -84,7 +84,6 @@ class Buttons(object):
 		self.mod=None	 				#Show what affiliations a tone has
 		self.aff=aff					#Affiliation to a tone, only extension options have this
 		self.forbidden=False
-		self.name=name
 
 	@staticmethod						#used to initialize the button class when switching to another chord box.
 	def initialize():
@@ -92,7 +91,6 @@ class Buttons(object):
 			item.on=False
 			item.forbidden=False
 			item.mod=None
-		Buttons.allButton=[]
 		Buttons.keyEx=None
 		Buttons.ShFlEx=None
 		Buttons.ProEx=None
@@ -108,6 +106,7 @@ class Buttons(object):
 		tempLst=[Buttons.keyEx,Buttons.ShFlEx,Buttons.quality,Buttons.quality7]
 		for item in tempLst:
 			if item!=None:
+				print(item)
 				if item.text!="Dom":
 					ChordSym+=item.text
 				else: ChordSym+=7
@@ -115,7 +114,7 @@ class Buttons(object):
 			if item.text=="9":
 				if "M" in ChordSym:
 					ChordSym=ChordSym[0:-1]+"9"
-				if "m" in ChordSym:
+				elif "m" in ChordSym:
 					if "b" in ChordSym:
 						ChordSym=ChordSym[0:2]+"9"
 					else:
@@ -123,13 +122,26 @@ class Buttons(object):
 				if item.mod!=None:
 					ChodSym+=item.mod.text+"9"
 				else:
-					ChodSym+=
+					ChodSym+="9"
 			elif item.text=="13":
 				if "M" in ChordSym:
 					ChordSym=ChordSym[0:-1]+"13"
+				elif item.mod!=None:
+					ChordSym+=item.mod.text+"13"
 				else:
-					if item.mod
-			elif item.text="11"
+					ChordSym+="13"
+			elif item.text=="11":
+				if "m" in ChordSym:
+					ChordSym=ChordSym[0:-1]+'11'
+				elif item.mod!=None:
+					ChordSym+=item.mod.text+'11'
+				else:
+					ChordSym+="11"
+			elif item.text=='5':
+				if item.mod!=None:
+					ChordSym+=item.mod.text+'5'
+		return ChordSym
+
 			
 	def drawButton(self,canvas,data): 	#draw a button
 		if self.on:
@@ -315,7 +327,7 @@ def mousePressed(event, data):
 		if not data.select:
 			Buttons.RawCompile(data)
 			Buttons.initialize()
-			print(allChords)
+			
 		return
 	(row, col) = getCell(event.x, event.y, data)
 	# select this (row, col) unless it is selected
@@ -325,7 +337,6 @@ def mousePressed(event, data):
 		if not data.select:
 			Buttons.RawCompile(data)
 			Buttons.initialize()
-			print(allChords)
 		data.selection = (row, col)
 
 def keyPressed(event, data):
