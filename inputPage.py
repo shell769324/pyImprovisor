@@ -1,5 +1,8 @@
 
 from tkinter import *
+import MidiConverter
+
+
 # def draw(canvas, width, height):
 #     canvas.create_rectangle(0,0,150,150, fill="yellow")
 
@@ -12,6 +15,7 @@ from tkinter import *
 #     draw(canvas, width, height)
 #     root.mainloop()
 #     print("bye!")
+
 
 # runDrawing(800, 1200)
 
@@ -27,8 +31,6 @@ allChords = ["Am7", NONE, NONE, NONE, NONE, NONE, NONE, NONE,
 			"BbM7", NONE, "Bbm7", "Eb7", "AbM7", NONE, "Abm7", "Db7",]
 
 inputs = []
-
-
 
 
 def compileInputs(allChords):
@@ -71,7 +73,8 @@ class Buttons(object):
 	tones=[]
 	quality=None
 	quality7=None
-	def __init__(self,size,shape,location,text,ButtonType="Key",on=False,color="red",aff=None,tone=None):
+	GenEx=None
+	def __init__(self,size,shape,location,text,ButtonType="Key",on=False,color=color4,aff=None,tone=None):
 		Buttons.allButton.append(self)
 		self.on=on          			# indicate if it's on
 		self.size=size      			#size of it. 
@@ -83,7 +86,7 @@ class Buttons(object):
 		self.ButtonType=ButtonType
 		self.mod=None	 				#Show what affiliations a tone has
 		self.aff=aff					#Affiliation to a tone, only extension options have this
-		self.forbidden=False
+
 
 	@staticmethod						#used to initialize the button class when switching to another chord box.
 	def initialize():
@@ -91,6 +94,7 @@ class Buttons(object):
 			item.on=False
 			item.forbidden=False
 			item.mod=None
+		Buttons.allButton=[]
 		Buttons.keyEx=None
 		Buttons.ShFlEx=None
 		Buttons.ProEx=None
@@ -98,63 +102,55 @@ class Buttons(object):
 		Buttons.quality=None
 		Buttons.quality7=None
 
-	@staticmethod
-	def RawCompile(data):
-		ChordSym=''
-		sel=data.selection
-		num=(sel[1]-1)*8+sel[1]
-		tempLst=[Buttons.keyEx,Buttons.ShFlEx,Buttons.quality,Buttons.quality7]
-		for item in tempLst:
-			if item!=None:
-				print(item)
-				if item.text!="Dom":
-					ChordSym+=item.text
-				else: ChordSym+=7
-		for item in Buttons.tones:
-			if item.text=="9":
-				if "M" in ChordSym:
-					ChordSym=ChordSym[0:-1]+"9"
-				elif "m" in ChordSym:
-					if "b" in ChordSym:
-						ChordSym=ChordSym[0:2]+"9"
-					else:
-						ChordSym=ChordSym[0:1]+"9"
-				if item.mod!=None:
-					ChodSym+=item.mod.text+"9"
-				else:
-					ChodSym+="9"
-			elif item.text=="13":
-				if "M" in ChordSym:
-					ChordSym=ChordSym[0:-1]+"13"
-				elif item.mod!=None:
-					ChordSym+=item.mod.text+"13"
-				else:
-					ChordSym+="13"
-			elif item.text=="11":
-				if "m" in ChordSym:
-					ChordSym=ChordSym[0:-1]+'11'
-				elif item.mod!=None:
-					ChordSym+=item.mod.text+'11'
-				else:
-					ChordSym+="11"
-			elif item.text=='5':
-				if item.mod!=None:
-					ChordSym+=item.mod.text+'5'
-		return ChordSym
-
+	# @staticmethod
+	# def RawCompile(data):
+	# 	ChordSym=''
+	# 	sel=data.selection
+	# 	num=(sel[1]-1)*8+sel[1]
+	# 	tempLst=[Buttons.keyEx,Buttons.ShFlEx,Buttons.quality,Buttons.quality7]
+	# 	for item in tempLst:
+	# 		if item!=None:
+	# 			if item.text!="Dom":
+	# 				ChordSym+=item.text
+	# 			else: ChordSym+=7
+	# 	for item in Buttons.tones:
+	# 		if item.text=="9":
+	# 			if "M" in ChordSym:
+	# 				ChordSym=ChordSym[0:-1]+"9"
+	# 			if "m" in ChordSym:
+	# 				if "b" in ChordSym:
+	# 					ChordSym=ChordSym[0:2]+"9"
+	# 				else:
+	# 					ChordSym=ChordSym[0:1]+"9"
+	# 			if item.mod!=None:
+	# 				ChodSym+=item.mod.text+"9"
+	# 			else:
+	# 				ChodSym+=
+	# 		elif item.text=="13":
+	# 			if "M" in ChordSym:
+	# 				ChordSym=ChordSym[0:-1]+"13"
+	# 			else:
+	# 				if item.mod
+	# 		elif item.text="11"
 			
+
 	def drawButton(self,canvas,data): 	#draw a button
 		if self.on:
 			color=self.color
 		else: color = "white"
 		if self.shape==1:
 			canvas.create_oval(self.loc[0]-self.size,
-				self.loc[1]-self.size,self.loc[0]+self.size,self.loc[1]+self.size,fill=color)
+				self.loc[1]-self.size,self.loc[0]+self.size,self.loc[1]+self.size,
+				fill=color, outline=color1, dash=(1,5))
+			canvas.create_text(self.loc[0],self.loc[1],text=self.text, font=("Comic Sans MS", "15"))
+			
 		elif self.shape==0:
 			canvas.create_rectangle(self.loc[0]-self.size,
-				self.loc[1]-self.size,self.loc[0]+self.size,self.loc[1]+self.size,fill=color)
-		canvas.create_text(self.loc[0],self.loc[1],text=self.text)
+				self.loc[1]-self.size,self.loc[0]+self.size,self.loc[1]+self.size,
+				fill=color, outline=color1, dash=(1,5))
+			canvas.create_text(self.loc[0],self.loc[1],text=self.text, font=("Comic Sans MS", "15"))
 	
+
 	def detectButton(self,x,y,data):
 		if abs(self.loc[0]-x)<self.size and abs(self.loc[1]-y)<self.size:
 			if self.ButtonType=="Key":
@@ -196,8 +192,8 @@ class Buttons(object):
 					else:
 						Buttons.ProEx=self
 						self.on=True
-						RUN_FLAG = False
-						print ("run flag is false!")
+						data.renderflag = True
+						print ("render flag is True!")
 				else:
 					self.on=False
 					Buttons.ProEx=None
@@ -245,20 +241,34 @@ class Buttons(object):
 				else: 
 					self.on=False
 					Buttons.quality7=False
+			elif self.ButtonType=="Genre":
+				if Buttons.GenEx!=self:
+					if Buttons.GenEx!=None:
+						Buttons.GenEx.on=False
+						Buttons.GenEx=self      	 #If the button is a genre and is not the current key, it's 
+						self.on=True             	 #then switched to this button.
+					else:
+						Buttons.GenEx=self
+						self.on=True
+				else:
+					self.on=False
+					Buttons.GenEx=None
+
 #####################################
 # Grid functions
 #####################################
+
 def getIndex(row, col):
 	return 8*row + col
 
 def init(data):
 	data.select=False
-
 	data.rows = 3
 	data.cols = 8
 	data.margin = 5 # margin around grid
 	data.selection = (-1, -1) # (row, col) of selection, (-1,-1) for none
 	
+	#Key Buttons
 	AKeyButton=Buttons(30,0,(900,50+0*70),"A") #Key Buttons
 	BKeyButton=Buttons(30,0,(900,50+1*70),"B")
 	CKeyButton=Buttons(30,0,(900,50+2*70),"C")
@@ -284,6 +294,19 @@ def init(data):
 	SharpButton9=Buttons(20,1,(1000,50+1*70),"#",ButtonType="ShFlTone",aff=Button9)
 	SharpButton11=Buttons(20,1,(1000,50+2*70),"#",ButtonType="ShFlTone",aff=Button11)
 	FlatButton13=Buttons(20,1,(1100,50+3*70),"b",ButtonType="ShFlTone",aff=Button13)
+
+
+	# The proceed button
+	ProceedButton=Buttons(55, 1, (1050, 660), "Proceed!", ButtonType="Proceed")
+
+	# The genre button
+	BalladButton=Buttons(40, 0, (640, 500), "Ballad", ButtonType="Genre")
+	BluesButton=Buttons(40, 0, (640, 600), "Blues", ButtonType="Genre")
+	BebopButton=Buttons(40, 0, (740, 500), "Bebop", ButtonType="Genre")
+	BosaNovaButton=Buttons(40, 0, (740, 600), "BosaNova", ButtonType="Genre")
+
+
+
 
 def pointInGrid(x, y, data):
 	# return True if (x, y) is inside the grid defined by data.
@@ -320,23 +343,22 @@ def getCellBounds(row, col, data):
 	return (x0, y0, x1, y1)
 
 def mousePressed(event, data):
+
+	# if on the renderpage and we pressed the playing position, play music 
+	if data.renderflag == True:
+		if ((100 < event.x < 200) and (500 < event.y < 600)):
+			MidiConverter.Play("GreenDolphin1.mid")
+
 	for button in Buttons.allButton: #Check buttons status
-		button.detectButton(event.x,event.y,data)
+		button.detectButton(event.x,event.y, data)
 	
 	if (not pointInGrid(event.x, event.y, data)):
-		if not data.select:
-			Buttons.RawCompile(data)
-			Buttons.initialize()
-			
 		return
 	(row, col) = getCell(event.x, event.y, data)
 	# select this (row, col) unless it is selected
 	if (data.selection == (row, col)):
 		data.selection = (-1, -1)
 	else:
-		if not data.select:
-			Buttons.RawCompile(data)
-			Buttons.initialize()
 		data.selection = (row, col)
 
 def keyPressed(event, data):
@@ -344,11 +366,17 @@ def keyPressed(event, data):
 
 def redrawAll(canvas, data):
 
+
+	# Draw the play button
+	if data.renderflag == True:
+		canvas.create_oval(100, 500, 200, 600, fill=color3, outline=color3)
+		canvas.create_polygon(130, 520, 130, 580, 185, 550, fill=color2, outline=color1)
+
 	# draw grid of cells
 	for row in range(data.rows):
 		for col in range(data.cols):
 			(x0, y0, x1, y1) = getCellBounds(row, col, data)
-			fill = color5 if (data.selection == (row, col)) else "white"
+			fill = color4 if (data.selection == (row, col)) else color5
 			canvas.create_rectangle(x0, y0 + 50, x1, y1 + 50, fill=fill, outline=color3, dash=(1,5))
 
 	# The first extra bar line as start
@@ -378,11 +406,14 @@ def redrawAll(canvas, data):
 					font=("Comic Sans MS", "15"), fill=color2)
 
 
-
 	canvas.create_text(360, 25, text="New song 0",
 					   font=("Comic Sans MS", "30"), fill=color2)
-	for button in Buttons.allButton:
-		button.drawButton(canvas,data)
+
+	# The chord construction buttons only show up when renderflag is false
+	if data.renderflag == False:
+		for button in Buttons.allButton:
+			button.drawButton(canvas,data)
+
 
 
 ####################################
@@ -391,13 +422,11 @@ def redrawAll(canvas, data):
 
 def runInputPage(width=400, height=600):
 
-	global RUN_FLAG
-	RUN_FLAG = True
-
 	def redrawAllWrapper(canvas, data):
 		canvas.delete(ALL)
 		canvas.create_rectangle(0, 0, data.width, data.height,
-								fill='white', width=0)
+								fill=color5, width=0)
+
 		redrawAll(canvas, data)
 		canvas.update()    
 
@@ -414,11 +443,13 @@ def runInputPage(width=400, height=600):
 	data = Struct()
 	data.width = width
 	data.height = height
+	data.renderflag = False
 	root = Tk()
 	root.resizable(width=False, height=False) # prevents resizing window
 	init(data)
 	# create the root and the canvas
-	canvas = Canvas(root, width=data.width, height=data.height)
+	canvas = Canvas(root, width=data.width, height=data.height, bg=color5)
+
 	canvas.configure(bd=0, highlightthickness=0)
 	canvas.pack()
 
@@ -430,9 +461,6 @@ def runInputPage(width=400, height=600):
 							keyPressedWrapper(event, canvas, data))
 	redrawAll(canvas, data)
 	# and launch the app
-
-	if RUN_FLAG==False:
-		root.destroy()
 
 	root.mainloop()  # blocks until window closed
 
