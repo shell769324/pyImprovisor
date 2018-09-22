@@ -17,69 +17,25 @@ from Tkinter import *
 
 # runDrawing(800, 1200)
 
+####################################
+# Variables
+####################################
+
+allChords = []
+
+
+
+
 
 ####################################
-# options and variables page
+# Color Scheme
 ####################################
 
-
-OPTIONS = [
-"A",
-"B",
-"C"
-] #etc
-
-
-# w = OptionMenu(master, variable, *OPTIONS)
-# w.pack()
-
-# variable = StringVar(master)
-# variable.set(OPTIONS[0]) # default value
-
-def ok():
-    print ("value is:" + variable.get())
-
-# button = Button(master, text="OK", command=ok)
-# button.pack()
-
-# def drawOptionsPage(canvas, data):
-# 	w = OptionMenu(master, variable, *OPTIONS)
-# 	w.pack()
-
-# 	button = Button(master, text="OK", command=ok)
-# 	button.pack()
-
-
-
-# def runOptionsPage(width=400, height=600):
-
-# 	# Set up data and call init
-# 	class Struct(object): pass
-# 	data = Struct()
-# 	data.width = width
-# 	data.height = height
-# 	optionsPage = Tk()
-# 	optionsPage.resizable(width=False, height=False) # prevents resizing window
-# 	init(data)
-# 	# create the optionsPage and the canvas
-# 	canvasOP = Canvas(optionsPage, width=data.width, height=data.height)
-# 	canvasOP.configure(bd=0, highlightthickness=0)
-# 	canvasOP.pack()
-
-# 	# Variables
-# 	variable = StringVar(optionsPage)
-# 	variable.set(OPTIONS[0]) # default value
-
-# 	# set up events
-# 	optionsPage.bind("<Button-1>", lambda event:
-# 							mousePressedWrapper(event, canvas, data))
-# 	optionsPage.bind("<Key>", lambda event:
-# 							keyPressedWrapper(event, canvas, data))
-# 	drawOptionsPage(canvas, data)
-# 	# and launch the app
-# 	optionsPage.mainloop()  # blocks until window is closed
-
-# runOptionsPage(500, 500)
+color1 = "#011935"
+color2 = "#00343F"
+color3 = "#1DB0B8"
+color4 = "#37C6C0"
+color5 = "#D0E9FF"
 
 
 #####################################
@@ -88,7 +44,7 @@ def ok():
 
 
 def init(data):
-	data.rows = 4
+	data.rows = 3
 	data.cols = 8
 	data.margin = 5 # margin around grid
 	data.selection = (-1, -1) # (row, col) of selection, (-1,-1) for none
@@ -104,10 +60,10 @@ def getCell(x, y, data):
 	# return (row, col) in which (x, y) occurred or (-1, -1) if outside grid.
 	if (not pointInGrid(x, y, data)):
 		return (-1, -1)
-	gridWidth  = data.width/2 - 2*data.margin
+	gridWidth  = 2*data.width/3 - 2*data.margin
 	gridHeight = data.height/2 - 2*data.margin
-	cellWidth  = gridWidth / data.cols
-	cellHeight = gridHeight / data.rows
+	cellWidth  = gridWidth / (data.cols)
+	cellHeight = gridHeight / (data.rows)
 	row = (y - data.margin) // cellHeight
 	col = (x - data.margin) // cellWidth
 	# triple-check that we are in bounds
@@ -118,7 +74,7 @@ def getCell(x, y, data):
 def getCellBounds(row, col, data):
 	# aka "modelToView"
 	# returns (x0, y0, x1, y1) corners/bounding box of given cell in grid
-	gridWidth  = data.width/2 - 2*data.margin
+	gridWidth  = 2*data.width/3 - 2*data.margin
 	gridHeight = data.height/2 - 2*data.margin
 	columnWidth = gridWidth / data.cols
 	rowHeight = gridHeight / data.rows
@@ -140,18 +96,26 @@ def keyPressed(event, data):
 	pass
 
 def redrawAll(canvas, data):
+
 	# draw grid of cells
 	for row in range(data.rows):
 		for col in range(data.cols):
 			(x0, y0, x1, y1) = getCellBounds(row, col, data)
-			fill = "yellow" if (data.selection == (row, col)) else "white"
-			canvas.create_rectangle(x0, y0, x1, y1, fill=fill)
+			fill = color5 if (data.selection == (row, col)) else "white"
+			canvas.create_rectangle(x0, y0, x1, y1, fill=fill, outline=color3, dash=(1,5))
+
+	# The first extra bar line as start
+	canvas.create_line(15, 15, 15, 125, fill=color2, width=2)
+
+	# draw barlines
+	for row in range(data.rows):
+		for col in range(data.cols/2 + 1):
+			(x0, y0, x1, y1) = getCellBounds(row, col, data)
+			canvas.create_line(x0*2, y0+10, x0*2, y1-10, fill=color2, width=2)
 
 
-
-
-	canvas.create_text(data.width/2, data.height/2 - 15, text="Click in grids!",
-					   font="Arial 26 bold", fill="darkBlue")
+	canvas.create_text(150, 450, text="New song 0",
+					   font=("Tahoma", "30"), fill=color2)
 
 
 
@@ -188,9 +152,6 @@ def run(width=400, height=600):
 	canvas.configure(bd=0, highlightthickness=0)
 	canvas.pack()
 
-	# set drop down menu and button
-	variable = StringVar(root)
-	variable.set(OPTIONS[0]) # default value
 
 	# set up events
 	root.bind("<Button-1>", lambda event:
@@ -200,13 +161,7 @@ def run(width=400, height=600):
 	redrawAll(canvas, data)
 	# and launch the app
 
-	w = OptionMenu(root, variable, *OPTIONS)
-	w.pack(side="right")
-
-	button = Button(root, text="OK", command=ok)
-	button.pack(side="right")
-
 	root.mainloop()  # blocks until window is closed
 	print("bye!")
 
-run(800, 1200)
+run(1200, 800)
