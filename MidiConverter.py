@@ -1,6 +1,6 @@
 from midiutil import MIDIFile
 import pygame
-import time
+
 class MidiConverter(object):
 	def __init__(self,tempo=90,track=0,swing=1,channel=1):
 		self.tempo=tempo
