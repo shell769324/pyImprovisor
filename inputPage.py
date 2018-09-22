@@ -148,8 +148,9 @@ class Buttons(object):
 				else:
 					self.on=False
 					Buttons.tones.remove(self)
-					self.mod.on=False
-					self.mod=None
+					if self.mod!=None:
+						self.mod.on=False
+						self.mod=None
 			elif self.ButtonType=="ShFlTone":
 				if self.aff.mod==None:
 					if self.aff.on == False:
