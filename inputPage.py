@@ -101,13 +101,21 @@ def init(data):
 	data.cols = 8
 	data.margin = 5 # margin around grid
 	data.selection = (-1, -1) # (row, col) of selection, (-1,-1) for none
-	AKeyButton=Buttons(30,0,(800,600-0*50),"A")
-	BKeyButton=Buttons(30,0,(800,600-1*50),"B")
-	CKeyButton=Buttons(30,0,(800,600-2*50),"C")
-	DKeyButton=Buttons(30,0,(800,600-3*50),"D")
-	EKeyButton=Buttons(30,0,(800,600-4*50),"E")
-	FKeyButton=Buttons(30,0,(800,600-5*50),"F")
-	GKeyButton=Buttons(30,0,(800,600-6*50),"G")
+	
+	AKeyButton=Buttons(30,0,(900,50+0*70),"A") #Key Buttons
+	BKeyButton=Buttons(30,0,(900,50+1*70),"B")
+	CKeyButton=Buttons(30,0,(900,50+2*70),"C")
+	DKeyButton=Buttons(30,0,(900,50+3*70),"D")
+	EKeyButton=Buttons(30,0,(900,50+4*70),"E")
+	FKeyButton=Buttons(30,0,(900,50+5*70),"F")
+	GKeyButton=Buttons(30,0,(900,50+6*70),"G")
+
+	FlatButtonKey=Button()
+	SharpButtonKey
+	FlatButton9
+	SharpButton9
+	SharpButton11
+	FlatButton13
 
 def pointInGrid(x, y, data):
 	# return True if (x, y) is inside the grid defined by data.
