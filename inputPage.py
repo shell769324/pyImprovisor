@@ -13,9 +13,6 @@ from tkinter import *
 #     root.mainloop()
 #     print("bye!")
 
-forbiddenNone=[
-]
-
 # runDrawing(800, 1200)
 
 
@@ -82,22 +79,58 @@ class Buttons(object):
 		self.loc=location   			#a tuple in the form (x,y)
 		self.text=text      			#the text being displayed on it.
 		self.color=color
-		self.valid=True
 		self.tone=tone
 		self.ButtonType=ButtonType
 		self.mod=None	 				#Show what affiliations a tone has
 		self.aff=aff					#Affiliation to a tone, only extension options have this
 		self.forbidden=False
+		self.name=name
 
 	@staticmethod						#used to initialize the button class when switching to another chord box.
 	def initialize():
-		allButton=[]
-		keyEx=None
-		ShFlEx=None
-		ProEx=None
-		tones=[]
-		quality=None
+		for item in Buttons.allButton:
+			item.on=False
+			item.forbidden=False
+			item.mod=None
+		Buttons.allButton=[]
+		Buttons.keyEx=None
+		Buttons.ShFlEx=None
+		Buttons.ProEx=None
+		Buttons.tones=[]
+		Buttons.quality=None
+		Buttons.quality7=None
 
+	@staticmethod
+	def RawCompile(data):
+		ChordSym=''
+		sel=data.selection
+		num=(sel[1]-1)*8+sel[1]
+		tempLst=[Buttons.keyEx,Buttons.ShFlEx,Buttons.quality,Buttons.quality7]
+		for item in tempLst:
+			if item!=None:
+				if item.text!="Dom":
+					ChordSym+=item.text
+				else: ChordSym+=7
+		for item in Buttons.tones:
+			if item.text=="9":
+				if "M" in ChordSym:
+					ChordSym=ChordSym[0:-1]+"9"
+				if "m" in ChordSym:
+					if "b" in ChordSym:
+						ChordSym=ChordSym[0:2]+"9"
+					else:
+						ChordSym=ChordSym[0:1]+"9"
+				if item.mod!=None:
+					ChodSym+=item.mod.text+"9"
+				else:
+					ChodSym+=
+			elif item.text=="13":
+				if "M" in ChordSym:
+					ChordSym=ChordSym[0:-1]+"13"
+				else:
+					if item.mod
+			elif item.text="11"
+			
 	def drawButton(self,canvas,data): 	#draw a button
 		if self.on:
 			color=self.color
@@ -200,16 +233,15 @@ class Buttons(object):
 				else: 
 					self.on=False
 					Buttons.quality7=False
-
 #####################################
 # Grid functions
 #####################################
-
 def getIndex(row, col):
 	return 8*row + col
 
-
 def init(data):
+	data.select=False
+
 	data.rows = 3
 	data.cols = 8
 	data.margin = 5 # margin around grid
@@ -280,12 +312,20 @@ def mousePressed(event, data):
 		button.detectButton(event.x,event.y,data)
 	
 	if (not pointInGrid(event.x, event.y, data)):
+		if not data.select:
+			Buttons.RawCompile(data)
+			Buttons.initialize()
+			print(allChords)
 		return
 	(row, col) = getCell(event.x, event.y, data)
 	# select this (row, col) unless it is selected
 	if (data.selection == (row, col)):
 		data.selection = (-1, -1)
 	else:
+		if not data.select:
+			Buttons.RawCompile(data)
+			Buttons.initialize()
+			print(allChords)
 		data.selection = (row, col)
 
 def keyPressed(event, data):
