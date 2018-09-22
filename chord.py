@@ -41,16 +41,21 @@ class Chord:
     self.degree = (letters[letter] + tweak) % 12
 
   """
-  Set key notes (relative pitch) for minor sixth chord (the major sixth)
-  and for dominant chord (many options)
+  Set key notes (extensional notes)
   """
   def setKeyNotes(self):
     quality = self.quality
     name = self.name
     self.keyNotes = []
-    if(quality == "m" and name[-1] == '6'):
-      self.keyNotes = [9]
-    if(quality == "7"):
+    if(quality == "m"):
+      if(name[-1] == '6'):
+        self.keyNotes.append(9)
+      if("11" in name):
+        self.keyNotes.append(5)
+    elif(quality == "M7"):
+      if("#11" in name):
+        self.keyNotes.append(6)
+    elif(quality == "7"):
       if("b9" in name):
         self.keyNotes.append(1)
       if("#9" in name):
@@ -61,34 +66,6 @@ class Chord:
         self.keyNotes.append(8)
       if("13" in name):
         self.keyNotes.append(9)
-
-  """
-  Set the stable notes
-  Usually, a phrase ends at a stable note of the chord
-  The most stable notes will be spilled out first
-  """
-  def setStableNotes(self):
-    quality = self.quality
-    stableNotes = PriorityQueue()
-    stableNotes.put((0, 0)) # root
-    # third
-    if(quality in ["M", "M7"]):
-      stableNotes.put((1, 4))
-    else:
-      stableNotes.put((1, 3))
-    # fifth
-    if(quality == "m7b5"):
-      stableNotes.put((2, 6))
-    else:
-      stableNotes.put((2, 7))
-    # seventh
-    if(quality == "M7"):
-      stableNotes.put((3, 11))
-    else:
-      stableNotes.put((3, 10))
-    # second
-    stableNotes.put((4, 2))
-    self.stableNotes = stableNotes
 
   """
   Get a random post 
@@ -118,3 +95,32 @@ class Chord:
       return 2
     else:
       raise ValueError("invalid post type!")
+
+  """
+  Set the stable notes
+  Usually, a phrase ends at a stable note of the chord
+  The most stable notes will be spilled out first
+  Deprecated function
+  """
+  def setStableNotes(self):
+    quality = self.quality
+    stableNotes = PriorityQueue()
+    stableNotes.put((0, 0))  # root
+    # third
+    if (quality in ["M", "M7"]):
+      stableNotes.put((1, 4))
+    else:
+      stableNotes.put((1, 3))
+    # fifth
+    if (quality == "m7b5"):
+      stableNotes.put((2, 6))
+    else:
+      stableNotes.put((2, 7))
+    # seventh
+    if (quality == "M7"):
+      stableNotes.put((3, 11))
+    else:
+      stableNotes.put((3, 10))
+    # second
+    stableNotes.put((4, 2))
+    self.stableNotes = stableNotes
