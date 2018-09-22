@@ -1,4 +1,4 @@
-from tkinter import *
+from Tkinter import *
 
 # def draw(canvas, width, height):
 #     canvas.create_rectangle(0,0,150,150, fill="yellow")
@@ -21,7 +21,14 @@ from tkinter import *
 # Variables
 ####################################
 
-allChords = []
+allChords = ["Am7", NONE, NONE, NONE, NONE, NONE, NONE, NONE,
+			"Cm7", NONE, NONE, NONE, NONE, NONE, NONE, "F7",
+			"BbM7", NONE, "Bbn7", "Eb7", "AbM7", NONE, "Abm7", "Db7",]
+
+
+
+
+
 ####################################
 # Color Scheme
 ####################################
@@ -101,6 +108,9 @@ class Buttons(object):
 # Grid functions
 #####################################
 
+def getIndex(row, col):
+	return 8*row + col
+
 
 def init(data):
 	data.rows = 3
@@ -125,8 +135,8 @@ def init(data):
 
 def pointInGrid(x, y, data):
 	# return True if (x, y) is inside the grid defined by data.
-	return ((data.margin <= x <= data.width-data.margin) and
-			(data.margin <= y <= data.height-data.margin))
+	return ((data.margin <= x <= (data.width*2)/3-data.margin) and
+			(data.margin <= y <= (data.height*2)/3-data.margin))
 
 def getCell(x, y, data):
 	# aka "viewToModel"
@@ -187,6 +197,13 @@ def redrawAll(canvas, data):
 		for col in range(data.cols//2 + 1):
 			(x0, y0, x1, y1) = getCellBounds(row, col, data)
 			canvas.create_line(x0*2, y0+10, x0*2, y1-10, fill=color2, width=2)
+
+	# show symbols
+	for row in range(data.rows):
+		for col in range(data.cols):
+			(x0, y0, x1, y1) = getCellBounds(row, col, data)
+
+			canvas.create_text((x0 + x1)/2, (y0 + y1)/2, text="C", font=("Tahoma", "40"), fill=color2)
 
 
 	canvas.create_text(150, 450, text="New song 0",
