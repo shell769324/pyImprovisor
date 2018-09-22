@@ -1,4 +1,6 @@
+from __future__ import division
 import random
+import math
 from pianoSegment import PianoSegment
 """
   Create a phrase
@@ -7,11 +9,11 @@ from pianoSegment import PianoSegment
   @param rhythmBank: a rhythmBank
 """
 BASS_VOLUMN_RATIO = 0.8
-LINE_BASIC = {1:5, 2:7, 3:8, 4:10}
+LINE_BASIC = {1:5, 2:5, 3:7, 4:7, 5:8, 6:8, 7:10, 8:10, 9:10, 10:10, 11:10, 12:10, 13:10}
 LINE_FREQ = lambda x : LINE_BASIC[x] + random.randint(-2, 2)
-CHORDAL_BASIC = {1:7, 2:8, 3:8, 4:7}
+CHORDAL_BASIC = {1:7, 2:7, 3:8, 4:8, 5:8, 6:8, 7:7, 8:7, 9:7, 10:7, 11:7, 12:7, 13:7}
 CHORDAL_FREQ = lambda x : CHORDAL_BASIC[x] + random.randint(-2, 2)
-BLOCK_BASIC = {1:10, 2:7, 3:3, 4:2}
+BLOCK_BASIC = {1:10, 2:10, 3:7, 4:7, 5:3, 6:3, 7:2, 8:2, 9:0, 10:0, 11:0, 12:0, 13:0}
 BLOCK_FREQ = lambda x : BLOCK_BASIC[x] + random.randint(-2, 2)
 
 class Phrase:
@@ -23,19 +25,19 @@ class Phrase:
     self.dynamics = dynamics
     self.genre = genre
     self.dur = dur
+    self.lastEnd = lastEnd
     self.setBasicRhythm()
     self.setPitchTypePiano()
     self.setPostPiano()
     self.setSegmentsPiano()
     self.connectSegments()
-    self.lastEnd = lastEnd
 
   """
   Set the basic rhythms of piano and bass, used by the first segment
   Set the unit length
   """
   def setBasicRhythm(self):
-    shortest = 0
+    shortest = 100
     for chord in self.chords:
       shortest = min(shortest, chord.dur)
     self.unitLength = shortest ## The number of bar
@@ -64,6 +66,7 @@ class Phrase:
   def setPitchTypePiano(self):
     rou = self.calculateDensity(self.basicPianoRhythm)
     # Calculate the bid of each pitch type
+    print("rou: ", rou)
     blockBid = BLOCK_FREQ(rou)
     chordalBid = CHORDAL_FREQ(rou)
     lineBid = LINE_FREQ(rou)
@@ -120,8 +123,8 @@ class Phrase:
   def setSegmentsPiano(self):
     pianoSegments = self.pianoSegments
     pianoSegments[0].finalize(None, pianoSegments[1].post)
-    for i in range(1, self.dur // self.unitLength):
-      nextNote = pianoSegments[i + 1].post if i != self.dur//self.unitLength - 1 else -1
+    for i in range(1, (int) (round(self.dur // self.unitLength))):
+      nextNote = pianoSegments[i + 1].post if i != (int) (round(self.dur // self.unitLength)) - 1 else -1
       pianoSegments[i].finalize(pianoSegments[i - 1], nextNote)
 
   """
@@ -130,6 +133,11 @@ class Phrase:
   """
   def connectSegments(self):
     connected = []
-    for seg in self.pianoSegments):
-      connected.extend(seg.res)
-    self.connected = connected
+    currT = 0
+    for seg in self.pianoSegments:
+      temp = seg.res
+      local = 0
+      for i in range(len(temp)):
+        connected.append([temp[i][0], temp[i][1] + currT, temp[i][2], temp[i][3]])
+      currT += temp[-1][1] + temp[-1][2]
+    self.res = connected

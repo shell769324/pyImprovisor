@@ -51,7 +51,7 @@ class PianoSegment:
     return top / (prevMag * currMag) ** 0.5
 
   """
-  Check stable notes and key notes in downbeats
+  Check stable notes and key notes
   """
   def countDownBeatsNotes(self, pit):
     return 42
@@ -83,7 +83,7 @@ class PianoSegment:
       if(rhythm[i] > 0):
         start = i
         i += 1
-        while(i < len(rhythm) and rhythm[i - 1] == rhythm[i]):
+        while(i < len(rhythm) and rhythm[i] == -1):
           i += 1
         res.append((start * 120 / 96, (i - start) * 120 / 96, rhythm[start]))
         i -= 1
@@ -97,15 +97,15 @@ class PianoSegment:
     chord = self.chord
     register = ((self.post - 12) // 12) * 12 # the register at least one octave lower than the top
     block = []
-    block.append((chord.getPost("third") + chord.degree()) % 12 + register)
-    block.append((chord.getPost("fifth") + chord.degree()) % 12 + register)
+    block.append((chord.getPost("third") + chord.degree) % 12 + register)
+    block.append((chord.getPost("fifth") + chord.degree) % 12 + register)
     res = []
     if("7" in chord.quality):
-      block.append((chord.getPost("seventh") + chord.degree()) % 12 + register)
+      block.append((chord.getPost("seventh") + chord.degree) % 12 + register)
     noteTime = self.getAllNoteTime(rhythm)
     for i in range(len(noteTime)):
       for j in range(len(block)):
-        res.append((block[i], noteTime[i][0], noteTime[i][1], noteTime[i][2]))
+        res.append([block[j], noteTime[i][0], noteTime[i][1], noteTime[i][2]])
     return res
 
   """
@@ -141,12 +141,14 @@ class PianoSegment:
         return 42
     else: # The second or other segment in a phrase
       return 42
+
   """
   Finalize decisions
   """
   def finalize(self, prev=None, nextNote=-1):
+    print(self.chord.name + "\n")
     self.prev = prev
     self.nextNote = nextNote
     if(self.pitchType == "BLOCK"):
-      self.res = self.blockChordNotes(self.rhythmBank(self.unitLength, self.genre, False,
+      self.res = self.blockChordNotes(self.rhythmBank.generateRhythm(self.unitLength, self.genre, False,
                                                       self.dynamics, True))

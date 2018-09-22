@@ -3,6 +3,8 @@ import math
 from bank import Bank
 from chord import Chord
 from phrase import Phrase
+import numpy
+from Rhythm import rhythm
 
 OCTAVE = 12
 
@@ -12,7 +14,7 @@ class Improvisor:
     self.letters = {'C': 0, 'D': 2, 'E': 4, 'F': 5, 'G': 7, 'A': 9, 'B': 11}
     #self.MyMIDI = MIDIFile(1, True, True, False, 1, 120, True)
     self.banks = {} # The bank of notes corresponding to a specific chord
-    self.rhythmBank = {}
+    self.rhythmBank = rhythm()
     self.chords = []
     self.phrases = []
     self.patterns = []
@@ -44,20 +46,15 @@ class Improvisor:
     return result
 
   """
-  Create a bank of rhythmic patterns
-  """
-  def createBanks(self):
-    self.rhythmBank
-    return 42
-
-  """
   Convert a list of chord symbols to a a list of Chord objects
-  Store the list of Chords as chords
+  Store the list of chords as chords
   @param chords: a list of chord symbols
   """
   def sheetIntepretor(self, chords):
+    print(chords)
     temp = []
-    for (chord, dur) in chords:
+    for i in range(len(chords)):
+      (chord, dur) = chords[i]
       temp.append(Chord(chord, dur))
     self.chords = temp
 
@@ -74,21 +71,29 @@ class Improvisor:
     chordsInPhrase = []
     prevPost = 60
     for i in range(len(chords)):
-      chord = chords[i]
-      chordsInPhrase.append(chord)
-      sum += chord.dur
-      if (math.isclose(sum, 1) and len(chordsInPhrase) >= 3):
+      chrd = chords[i]
+      chordsInPhrase.append(chrd)
+      sum += chrd.dur
+      print(sum)
+      if(numpy.isclose(sum, 1) and len(chordsInPhrase) >= 3):
+        print("here1")
         phrases.append(Phrase(chordsInPhrase, self.banks, self.rhythmBank,
                               dynamics, self.genre, 1, prevPost))
-      elif(math.isclose(sum, 2) and len(chordsInPhrase) >= 2):
+        prevPost = phrases[-1].lastEnd
+        chordsInPhrase = []
+        sum = 0
+      elif(numpy.isclose(sum, 2) and len(chordsInPhrase) >= 2):
         phrases.append(Phrase(chordsInPhrase, self.banks, self.rhythmBank,
                               dynamics, self.genre, 2, prevPost))
-      elif(math.isclose(sum, 4)):
+        prevPost = phrases[-1].lastEnd
+        chordsInPhrase = []
+        sum = 0
+      elif(numpy.isclose(sum, 4)):
         phrases.append(Phrase(chordsInPhrase, self.banks, self.rhythmBank,
                               dynamics, self.genre, 4, prevPost))
-      prevPost = phrases[-1].lastEnd
-      chordsInPhrase = []
-      sum = 0
+        prevPost = phrases[-1].lastEnd
+        chordsInPhrase = []
+        sum = 0
     self.phrases = phrases
 
   """
@@ -97,8 +102,14 @@ class Improvisor:
   """
   def connect(self):
     connected = []
+    currT = 0
     for phrase in self.phrases:
-      connected.extend(phrase.res)
+      temp = phrase.res
+      local = 0
+      for i in range(len(temp)):
+        connected.append([temp[i][0], temp[i][1] + currT, temp[i][2], temp[i][3]])
+      currT += temp[-1][1] + temp[-1][2]
+    print(connected)
     return connected
 
   """
@@ -106,15 +117,15 @@ class Improvisor:
   all chords, scales and licks that may be useful for improvisation
   """
   def expandBanks(self):
-    for chord in self.chords:
-      if(chord.name in self.banks):
+    for chrd in self.chords:
+      if(chrd.name in self.banks):
         continue
-      self.banks[chord.name] = Bank(chord)
+      self.banks[chrd.name] = Bank(chrd)
 
   """
   Generate the midi file that only contains the chord
   """
-  def pureChordsFile(self):
+  def purechordsFile(self):
     return 42
 
   """
@@ -125,6 +136,7 @@ class Improvisor:
   @param genre: a string specifying the genre
   """
   def generator(self, chords, tempo=100, genre="bebop"):
+    print(type(chords))
     self.tempo = tempo
     self.genre = genre
     self.sheetIntepretor(chords)
@@ -132,15 +144,15 @@ class Improvisor:
     self.deconstructor()
     self.connect()
 
-  def printChords(self):
-    for chord in self.chords:
-      print(chord.quality, end = " ")
+  def printchords(self):
+    for chrd in self.chords:
+      print(chrd.quality + " ")
     print("\n")
 
   def printPhrases(self):
     for phrase in self.phrases:
-      for chord in phrase:
-        print(chord.name, end = " ")
+      for chrd in phrase:
+        print(chrd.name + " ")
       print("")
 
 def merge(chords, durs):
@@ -151,16 +163,3 @@ def merge(chords, durs):
   for i in range(len(chords)):
     res.append((chords[i], durs[i]))
   return res
-
-improvisor = Improvisor()
-chords1 = ["Am7", "D7", "GM7", "CM7", "F#m7b5"]
-durs1 = [1, 1, 1, 1, 1]
-chords2 = ["B7", "Em"]
-durs2 = [1, 2]
-chords3 = ["B7", "Em", "F#m7b5", "B7b9", "Em", "Am7", "D7", "GM7",
-           "F#m7b5", "B7b9", "Em7", "A7", "Dm7", "G7", "F#m7b5", "B79", "Em"]
-durs3 = [1, 2, 1, 1, 2, 1, 1, 2,
-         1, 1, 0.5, 0.5, 0.5, 0.5, 1, 1, 2]
-feed = merge(chords1 + chords2 + chords1 + chords3, durs1 + durs2 + durs1 + durs3)
-improvisor.generator(feed, 100)
-improvisor.printPhrases()

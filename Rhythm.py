@@ -1,6 +1,7 @@
 import random
 import math
 
+
 # with attack at the begining of this 1/4 beat
 #4 * 1/16
 EVEN1 = [2, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1]
@@ -104,15 +105,8 @@ for i in range(1, 26):
 """
 
 class rhythm:
-	def __init__(self, Duration, Genre, Line, Dynamix, BR):
-		#Line: True-Bass; False-Piano
-		self.genre = Genre #string
-		self.duration = Duration #double
-		self.line = Line #boolean
-		self.dynamix = Dynamix #int
-		self.br = BR #boolean
-		self.cor = list(Correlation)
-		#self.generateRhythm()
+	def __init__(self):
+		self.hasInit = False
 
 	def QuarterIndex(self, index):
 		if (index == 1):
@@ -157,7 +151,7 @@ class rhythm:
 		resultNum = [0] * 27
 		# if this call is for BR, whether the quarternotes appeared in the BR
 
-		n = round(self.duration/0.25)
+		n = (int) (self.duration * 4)
 		#print("n: ")
 		#print(n)
 		#print("\n")
@@ -291,7 +285,7 @@ class rhythm:
 		if(GenDic[self.genre] == 4): #Bossa Nova
 			Result.append(self.bassBossa())
 		else:
-			n = round(self.duration/0.25)
+			n = self.duration * 4
 
 			for index in range(1, n + 1): 
 				if (self.QuarterIndex(index) == 0):
@@ -321,11 +315,22 @@ class rhythm:
 					elif (GenDic[self.genre] == 3): #Blues
 						Result.append(self.bassBlues())
 		#print("generateBass completed\n")
-		print(Result)
 		return Result 
 
-	def generateRhythm(self):
+	def generateRhythmWrapper(self):
 		if (self.line == 1):
 			return self.assignDynamix(self.generateBass())
 		elif(self.line == 0):
 			return self.assignDynamix(self.generatePiano())
+
+	def generateRhythm(self, Duration, Genre, Line, Dynamix, BR):
+		# Line: True-Bass; False-Piano
+		if(not self.hasInit):
+			self.genre = Genre  # string
+			self.duration = Duration  # double
+			self.line = Line  # boolean
+			self.dynamix = Dynamix  # int
+			self.br = BR  # boolean
+			self.cor = list(Correlation)
+		self.hasInit = True
+		return self.generateRhythmWrapper()

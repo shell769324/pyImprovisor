@@ -1,5 +1,4 @@
 OCTAVE = 12
-from queue import *
 class Chord:
   def __init__(self, name, dur):
     self.name = name
@@ -7,7 +6,6 @@ class Chord:
     self.setQuality()
     self.setDegree()
     self.setKeyNotes()
-    self.setStableNotes()
 
   """
   Set the quality of the chord by its name
@@ -95,32 +93,3 @@ class Chord:
       return 2
     else:
       raise ValueError("invalid post type!")
-
-  """
-  Set the stable notes
-  Usually, a phrase ends at a stable note of the chord
-  The most stable notes will be spilled out first
-  Deprecated function
-  """
-  def setStableNotes(self):
-    quality = self.quality
-    stableNotes = PriorityQueue()
-    stableNotes.put((0, 0))  # root
-    # third
-    if (quality in ["M", "M7"]):
-      stableNotes.put((1, 4))
-    else:
-      stableNotes.put((1, 3))
-    # fifth
-    if (quality == "m7b5"):
-      stableNotes.put((2, 6))
-    else:
-      stableNotes.put((2, 7))
-    # seventh
-    if (quality == "M7"):
-      stableNotes.put((3, 11))
-    else:
-      stableNotes.put((3, 10))
-    # second
-    stableNotes.put((4, 2))
-    self.stableNotes = stableNotes

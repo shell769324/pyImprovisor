@@ -1,6 +1,6 @@
 from Tkinter import *
 
->>>>>>> 1c83a30027eec981af98b62a8d3234b0cf01a381
+
 import MidiConverter
 import copy
 from improvisor import Improvisor
@@ -29,11 +29,11 @@ from improvisor import Improvisor
 # Variables
 ####################################
 
-allChords = ["A*m7", NONE, NONE, NONE, NONE, NONE, NONE, NONE,
-			"C*m7", NONE, NONE, NONE, NONE, NONE, NONE, "F*7",
-			"Bb*M7", NONE, "Bb*m7", "Eb*7", "Ab*M7", NONE, "Ab*m7", "Db*7",]
-tempo=140
-songTitle=New_song0
+allChords = ["C*7", NONE, "F*7", NONE, "C*7", NONE, "F*7", NONE,
+			 "F*7", NONE, NONE, NONE, "C*7", NONE, NONE, NONE,
+			 "G*7", NONE, "F*7", NONE, "C*7", "A*7", "D*m7", "G*7",]
+tempo=30
+songTitle = "Blues"
 inputs = []
 improv = Improvisor()
 
@@ -359,9 +359,9 @@ def mousePressed(event, data):
 	# if on the renderpage and we pressed the playing position, play music 
 	if data.renderflag == True:
 		if ((100 < event.x < 200) and (500 < event.y < 600)):
-			A=MidiConverter(tempo,0,0,1)     #First create the class, then initialize it, then add notes as you want, then write them. 
+			A=MidiConverter.MidiConverter(tempo,0,0,1)     #First create the class, then initialize it, then add notes as you want, then write them.
 			A.initialize()
-			improv.generator(input)
+			improv.generator(inputs)
 			A.addNotes(improv.connect())	#midi info from bobby
 			A.writeFiles(songTitle+".mid")
 			MidiConverter.Play(songTitle+".mid")
