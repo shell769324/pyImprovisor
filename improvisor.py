@@ -73,26 +73,23 @@ class Improvisor:
     phrases = []
     sum = 0 # Once sum hits 2, append the phrase to phrases
     chordsInPhrase = []
-    register = 60
+    prevPost = 60
     for i in range(len(chords)):
       chord = chords[i]
       chordsInPhrase.append(chord)
       sum += chord.dur
       if (math.isclose(sum, 1) and len(chordsInPhrase) >= 3):
-        register = phrases.append(Phrase(chordsInPhrase, self.banks, self.rhythmBank,
-                              dynamics, self.genre, 1, register))
-        chordsInPhrase = []
-        sum = 0
+        phrases.append(Phrase(chordsInPhrase, self.banks, self.rhythmBank,
+                              dynamics, self.genre, 1, prevPost))
       elif(math.isclose(sum, 2) and len(chordsInPhrase) >= 2):
-        register = phrases.append(Phrase(chordsInPhrase, self.banks, self.rhythmBank,
-                              dynamics, self.genre, 2, register))
-        chordsInPhrase = []
-        sum = 0
+        phrases.append(Phrase(chordsInPhrase, self.banks, self.rhythmBank,
+                              dynamics, self.genre, 2, prevPost))
       elif(math.isclose(sum, 4)):
-        register = phrases.append(Phrase(chordsInPhrase, self.banks, self.rhythmBank,
-                              dynamics, self.genre, 4, register))
-        chordsInPhrase = []
-        sum = 0
+        phrases.append(Phrase(chordsInPhrase, self.banks, self.rhythmBank,
+                              dynamics, self.genre, 4, prevPost))
+      prevPost = phrases[-1].lastEnd
+      chordsInPhrase = []
+      sum = 0
     self.phrases = phrases
 
   """

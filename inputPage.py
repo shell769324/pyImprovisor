@@ -1,6 +1,8 @@
-
 from Tkinter import *
+
+>>>>>>> 1c83a30027eec981af98b62a8d3234b0cf01a381
 import MidiConverter
+import copy
 
 
 # def draw(canvas, width, height):
@@ -26,17 +28,21 @@ import MidiConverter
 # Variables
 ####################################
 
-allChords = ["Am7", NONE, NONE, NONE, NONE, NONE, NONE, NONE,
-			"Cm7", NONE, NONE, NONE, NONE, NONE, NONE, "F7",
-			"BbM7", NONE, "Bbm7", "Eb7", "AbM7", NONE, "Abm7", "Db7",]
-
+allChords = ["A*m7", NONE, NONE, NONE, NONE, NONE, NONE, NONE,
+			"C*m7", NONE, NONE, NONE, NONE, NONE, NONE, "F*7",
+			"Bb*M7", NONE, "Bb*m7", "Eb*7", "Ab*M7", NONE, "Ab*m7", "Db*7",]
+tempo=140
+songTitle=New_song0
 inputs = []
 
 
 def compileInputs(allChords):
+	tempChords=copy.copy(allChords)
+	for i in range(len(tempChords)):
+		tempChords[i]=allChords[i].replace("*","")
 	thisChord = ""
 	count = 0
-	for chord in allChords:
+	for chord in tempChords:
 		if chord != NONE:
 			count = count + 1
 			if thisChord != "": 
@@ -50,6 +56,7 @@ def compileInputs(allChords):
 compileInputs(allChords)
 
 print(inputs)
+
 
 ####################################
 # Color Scheme
@@ -81,6 +88,8 @@ class Buttons(object):
 		self.shape=shape    			#1 is a ball and 0 is a square
 		self.loc=location   			#a tuple in the form (x,y)
 		self.text=text      			#the text being displayed on it.
+		if self.text=="5":
+			Buttons.tones.append(self)
 		self.color=color
 		self.tone=tone
 		self.ButtonType=ButtonType
@@ -90,49 +99,51 @@ class Buttons(object):
 
 	@staticmethod						#used to initialize the button class when switching to another chord box.
 	def initialize():
-		for item in Buttons.allButton:
-			item.on=False
-			item.forbidden=False
-			item.mod=None
-		Buttons.allButton=[]
 		Buttons.keyEx=None
 		Buttons.ShFlEx=None
 		Buttons.ProEx=None
 		Buttons.tones=[]
 		Buttons.quality=None
 		Buttons.quality7=None
+		for item in Buttons.allButton:
+			item.on=False
+			item.forbidden=False
+			item.mod=None
+			if item.text=="5":
+				item.on=True
+				Buttons.tones.append(item)
 
-	# @staticmethod
-	# def RawCompile(data):
-	# 	ChordSym=''
-	# 	sel=data.selection
-	# 	num=(sel[1]-1)*8+sel[1]
-	# 	tempLst=[Buttons.keyEx,Buttons.ShFlEx,Buttons.quality,Buttons.quality7]
-	# 	for item in tempLst:
-	# 		if item!=None:
-	# 			if item.text!="Dom":
-	# 				ChordSym+=item.text
-	# 			else: ChordSym+=7
-	# 	for item in Buttons.tones:
-	# 		if item.text=="9":
-	# 			if "M" in ChordSym:
-	# 				ChordSym=ChordSym[0:-1]+"9"
-	# 			if "m" in ChordSym:
-	# 				if "b" in ChordSym:
-	# 					ChordSym=ChordSym[0:2]+"9"
-	# 				else:
-	# 					ChordSym=ChordSym[0:1]+"9"
-	# 			if item.mod!=None:
-	# 				ChodSym+=item.mod.text+"9"
-	# 			else:
-	# 				ChodSym+=
-	# 		elif item.text=="13":
-	# 			if "M" in ChordSym:
-	# 				ChordSym=ChordSym[0:-1]+"13"
-	# 			else:
-	# 				if item.mod
-	# 		elif item.text="11"
-			
+	@staticmethod
+	def RawCompile(data):
+		num=data.selection[1]+data.selection[0]*8
+		ChordSym=Buttons.keyEx.text
+		if Buttons.ShFlEx!=None:
+			ChordSym+=Buttons.ShFlEx.text+"*"
+		else: ChordSym+="*"
+		if Buttons.quality!=None:
+			if Buttons.quality.text=="dom":
+				ChordSym+="7"
+			elif Buttons.quality7!=None:
+				ChordSym+=Buttons.quality.text+"7"
+			else: ChordSym+=Buttons.quality.text
+		for item in Buttons.tones:
+			if item.text=="5" and item.mod==None: continue
+			if "M" in ChordSym:
+				if item.mod!=None:
+					ChordSym=ChordSym+"#11"
+				else:
+					ChordSym+=item.text
+			if Buttons.quality.text=="dom":
+				if ChordSym[-1]=="7":
+					ChordSym=ChordSym[0:-1]+item.mod.text+item.text
+				else: 
+					ChordSym+=item.mod.text+item.text
+			if 'm' in ChordSym:
+				if ChordSym[-1]=="7":
+					ChordSym=ChordSym[0:-1]+item.text
+
+		allChords[int(num)]=ChordSym
+
 
 	def drawButton(self,canvas,data): 	#draw a button
 		if self.on:
@@ -344,10 +355,15 @@ def getCellBounds(row, col, data):
 
 def mousePressed(event, data):
 
+
 	# if on the renderpage and we pressed the playing position, play music 
 	if data.renderflag == True:
 		if ((100 < event.x < 200) and (500 < event.y < 600)):
-			MidiConverter.Play("GreenDolphin1.mid")
+			A=MidiConverter(tempo,0,0,1)     #First create the class, then initialize it, then add notes as you want, then write them. 
+			A.initialize()
+			A.addNotes(xxxxxxx)	#midi info from bobby
+			A.writeFiles(songTitle)
+			MidiConverter.Play(songTitle+".mid")
 
 	for button in Buttons.allButton: #Check buttons status
 		button.detectButton(event.x,event.y, data)
@@ -357,6 +373,8 @@ def mousePressed(event, data):
 	(row, col) = getCell(event.x, event.y, data)
 	# select this (row, col) unless it is selected
 	if (data.selection == (row, col)):
+		Buttons.RawCompile(data)
+		Buttons.initialize()
 		data.selection = (-1, -1)
 	else:
 		data.selection = (row, col)
@@ -396,17 +414,26 @@ def redrawAll(canvas, data):
 			if text != NONE:
 				bass = text[0]
 				optionalFlat = True if (text[1]=="b") else False
-				quality = text[2:] if optionalFlat == True else text[1:]
-
+				optionalSharp= True if (text[1]=="#") else False
 				# display the bass
-				canvas.create_text((x0 + x1)/2 , (y0 + y1)/2 + 50, text=bass+("b" if optionalFlat==True else ""), 
+				if optionalSharp: 
+					textTemp=bass+"#"
+					quality=text[3:]
+				elif optionalFlat:
+					textTemp=bass+"b"
+					quality=text[3:]
+				else: 
+					textTemp=bass
+					quality=text[2:]
+
+				canvas.create_text((x0 + x1)/2 , (y0 + y1)/2 + 50, text=textTemp, 
 					font=("Comic Sans MS", "30"), fill=color2)
 				# display the quality
-				canvas.create_text((x0 + x1)/2 + 20, (y0 + y1)/2 - 10 + 50, text=quality, 
+				canvas.create_text((x0 + x1)/2 + 20, (y0 + y1)/2 - 10 + 40, text=quality, 
 					font=("Comic Sans MS", "15"), fill=color2)
 
 
-	canvas.create_text(360, 25, text="New song 0",
+	canvas.create_text(360, 25, text=songTitle,
 					   font=("Comic Sans MS", "30"), fill=color2)
 
 	# The chord construction buttons only show up when renderflag is false

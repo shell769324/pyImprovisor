@@ -15,7 +15,6 @@ class PianoSegment:
     self.dynamics = dyna
     self.banks = banks
     self.chord = chord
-    self.register = 60 # Default
 
   """
   Calculate the density of a rhythm pattern
@@ -78,7 +77,10 @@ class PianoSegment:
   return a list of notes of block chords type
   """
   def blockChordNotes(self):
-    return 42
+    chord = self.chord
+    register = ((self.post - 12) // 12) * 12 # the register at least one octave lower than the top
+    third = (chord.getPost("third") + chord.degree()) % 12 + register
+    seventh = (chord.getPost("seventh") + chord.degree()) % 12 + register
 
   """
   return a list of notes of chordal notes type
