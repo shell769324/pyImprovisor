@@ -1,4 +1,5 @@
 import random
+import bank
 
 TRIAL = 3
 class PianoSegment:
@@ -130,8 +131,49 @@ class PianoSegment:
   """
   return a list of notes of line notes type
   """
-  def lineNotes(self):
-    return 42
+
+  def lineNotes(self,rhythm):
+    a=self.nextNote
+    b=self.post
+    canUse = self.banks[self.chord.name]
+    notes=getAllNoteTime(rhythm)
+
+    listTemp=[]
+    for i in [-2,-1,0,1,2]:
+      for item in canUse: 
+        listTemp.append(item+i*12)
+    if b not in listTemp:
+      if b-1 in listTemp:
+        b=b-1
+      else: b=b+1
+    aLoc,bLoc=listTemp.index(a),listTemp.index(b)
+    DNCU=bLoc-aLoc
+
+    if DNCU > 0: GG=1
+    else: GG=-1 
+
+    if abs(DNCU) >= len(notes):
+      for i in range(len(notes)):
+        notes[i]=(listTemp(listTemp.index(a)+GG*i),notes[i][0],notes[1],notes[2])
+      return notes
+    else:
+      if abs(DNCU)-len(notes)==1:
+        for i in range(len(notes)):
+          notes[i]=(listTemp(listTemp.index(a)+GG*i),notes[i][0],notes[1],notes[2])
+        return notes
+      elif abs(DNCU)-len(notes)==2:
+        for i in range(len(notes-1)):
+          notes[i]=(listTemp[listTemp.index(a)+GG*i],notes[i][0],notes[1],notes[2])
+        notes[-1]=(listTemp[bLoc+1],notes[-1])
+        return notes
+      elif abs(DNCU)-len(notes)==3:
+        for i in range(len(notes-1)):
+          notes[i]=(listTemp[listTemp.index(a)+GG*i],notes[i][0],notes[1],notes[2])
+        notes[-1]=(listTemp[bLoc+1],notes[-1])
+        return notes
+
+
+
 
   """
   Set the notes of this segment

@@ -1,4 +1,4 @@
-from Tkinter import *
+from tkinter import *
 
 import MidiConverter
 import copy
@@ -360,7 +360,7 @@ def mousePressed(event, data):
 	# if on the renderpage and we pressed the playing position, play music 
 	if data.renderflag == True:
 		if ((100 < event.x < 200) and (500 < event.y < 600)):
-			A=MidiConverter(tempo,0,0,1)     #First create the class, then initialize it, then add notes as you want, then write them. 
+			A=MidiConverter.MidiConverter(tempo,0,0,1)     #First create the class, then initialize it, then add notes as you want, then write them. 
 			A.initialize()
 			improv.generator(input)
 			A.addNotes(improv.connect())	#midi info from bobby
