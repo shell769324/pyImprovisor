@@ -1,9 +1,8 @@
 from Tkinter import *
 
->>>>>>> 1c83a30027eec981af98b62a8d3234b0cf01a381
 import MidiConverter
 import copy
-from improvisor import Improvisor
+# from improvisor import Improvisor
 
 
 # def draw(canvas, width, height):
@@ -23,28 +22,28 @@ from improvisor import Improvisor
 # runDrawing(800, 1200)
 
 
-
-
 ####################################
 # Variables
 ####################################
 
-allChords = ["A*m7", NONE, NONE, NONE, NONE, NONE, NONE, NONE,
-			"C*m7", NONE, NONE, NONE, NONE, NONE, NONE, "F*7",
-			"Bb*M7", NONE, "Bb*m7", "Eb*7", "Ab*M7", NONE, "Ab*m7", "Db*7",]
+allChords = ["A*m7", None, None, None, None, None, None, None,
+			"C*m7", None, None, None, None, None, None, "F*7",
+			"Bb*M7", None, "Bb*m7", "Eb*7", "Ab*M7", None, "Ab*m7", "Db*7",]
+
+
 tempo=140
-songTitle=New_song0
+songTitle="New_song0"
 inputs = []
 improv = Improvisor()
 
 def compileInputs(allChords):
 	tempChords=copy.copy(allChords)
 	for i in range(len(tempChords)):
-		tempChords[i]=allChords[i].replace("*","")
+		tempChords[i]=allChords[i].replace("*","") if allChords[i] != None else tempChords[i]
 	thisChord = ""
 	count = 0
 	for chord in tempChords:
-		if chord != NONE:
+		if chord != None:
 			count = count + 1
 			if thisChord != "": 
 				inputs.append((thisChord, 0.5*count))
@@ -55,6 +54,7 @@ def compileInputs(allChords):
 	return True
 
 compileInputs(allChords)
+
 
 print(inputs)
 
@@ -143,7 +143,10 @@ class Buttons(object):
 			if 'm' in ChordSym:
 				if ChordSym[-1]=="7":
 					ChordSym=ChordSym[0:-1]+item.text
+		if (Buttons.GenEx != None):
+			inputs.append(Buttons.GenEx.text)
 		allChords[int(num)]=ChordSym
+
 
 
 	def drawButton(self,canvas,data): 	#draw a button
@@ -261,6 +264,7 @@ class Buttons(object):
 						self.on=True             	 #then switched to this button.
 					else:
 						Buttons.GenEx=self
+
 						self.on=True
 				else:
 					self.on=False
@@ -278,7 +282,7 @@ def init(data):
 	data.rows = 3
 	data.cols = 8
 	data.margin = 5 # margin around grid
-	data.selection = (-1, -1) # (row, col) of selection, (-1,-1) for none
+	data.selection = (-1, -1) # (row, col) of selection, (-1,-1) for None
 	
 	#Key Buttons
 	AKeyButton=Buttons(30,0,(900,50+0*70),"A") #Key Buttons
@@ -353,9 +357,6 @@ def getCellBounds(row, col, data):
 	return (x0, y0, x1, y1)
 
 def mousePressed(event, data):
-
-
-
 	# if on the renderpage and we pressed the playing position, play music 
 	if data.renderflag == True:
 		if ((100 < event.x < 200) and (500 < event.y < 600)):
@@ -412,7 +413,7 @@ def redrawAll(canvas, data):
 		for col in range(data.cols):
 			(x0, y0, x1, y1) = getCellBounds(row, col, data)
 			text = allChords[getIndex(row, col)]
-			if text != NONE:
+			if text != None:
 				bass = text[0]
 				optionalFlat = True if (text[1]=="b") else False
 				optionalSharp= True if (text[1]=="#") else False
@@ -492,6 +493,7 @@ def runInputPage(width=400, height=600):
 
 	root.mainloop()  # blocks until window closed
 
+	print(inputs)
 	print("bye!")
 
 
