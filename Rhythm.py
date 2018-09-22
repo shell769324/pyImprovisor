@@ -79,6 +79,20 @@ RhyDic = {"EVEN1":1, "EVEN2":2, "EVEN3":3, "MIX1":4, "MIX2":5, "TRIP1":6, "DOT1"
 print(RhyBank[RhyDic["DURP4"]][0])
 print(RhyBank[RhyDic["DURP4"]][23])
 """
+#correlation list
+Correlation = []
+row = []
+Correlation += [row]
+for i in range(1, 26):
+	row.append(0.0)
+	for j in range(1, 26):
+		if RhyBank[i][23] == 0 and RhyBank[j][0] == 1: #Pause to Tie cannot occur
+			row.append(0.0)
+			continue
+		if i <= 6 and (j <= 6 or j == 8 or j == 23):
+			row.append(0.99)
+		else:
+			row.append(0.7)
 
 class rhythm:
 	def __init__(self, Duration, Genre, Line, Dynamix, BR):
@@ -87,8 +101,9 @@ class rhythm:
 		self.duration = Duration #double
 		self.line = Line #boolean
 		self.dynamix = Dynamix #int
+		self.br = BR #boolean
+		self.cor = list(Correlation)
 		self.generateRhythm(self)
-		self.br = BR
 
 	def QuarterIndex(self, index):
 		if (self.duration == 1):
@@ -119,14 +134,32 @@ class rhythm:
 
 
 	def generatePiano(self):
+		Result = []
+		resultNum = [] #what quarternotes appear in this duration
+		n = round(1/self.duration)
+		if(self.br == True):
+			self.cor = list(Correlation)
+		prev = 19
+		for i in range(1, n):
+			if(self.QuarterIndex(self, i) == 0):
+				prev = 19
+					#randomize according to the row of self.cor[prev]
+					#assign the result of randomization to prev
+			else:
+					#randomize according to the row of self.cor[prev]
+					#(the previous quarternote)
+		if(self.br == True):
+			#decrease the numbers in columns (column index not in resultNum) in self.cor
+
+
 
 	def bassBossa(self):
 		Res = []
 		n = round(1/self.duration)
 		for index in range(1, n)
-			if(QuarterIndex(self,index) == 0):
+			if(self.QuarterIndex(self,index) == 0):
 				Res.append(list(DOT1))
-			elif (QuarterIndex(self,index) == 1):
+			elif (self.QuarterIndex(self,index) == 1):
 				randomizer = random.randint(1, 100)
 				if randomizer <= 25:
 					Res.append(list(DURA2))
@@ -136,7 +169,7 @@ class rhythm:
 					Res.append(list(DURA3))
 				else:
 					Res.append(list(DURA7))
-			elif(QuarterIndex(self,index) == 2):
+			elif(self.QuarterIndex(self,index) == 2):
 				randomizer = random.randint(1, 100)
 				if randomizer <= 70:
 					Res.append(list(DOT1))
@@ -200,7 +233,7 @@ class rhythm:
 		else:
 			n = round(1/self.duration)
 			for index in range(1, n): 
-				if (QuarterIndex(self, index) == 0):
+				if (self.QuarterIndex(self, index) == 0):
 					#this quarternote is the first quarternote of this chord
 					randomizer = random.randint(1, 100)
 					if randomizer <= 65:
@@ -209,7 +242,7 @@ class rhythm:
 						Result.append(list(EVEN3))
 					else:
 						Result.append(list(MIX1))
-				elif (QuarterIndex(self, index) == 1):
+				elif (self.QuarterIndex(self, index) == 1):
 					#this quarternote is the 3rd/5th/7th quarternote of this chord
 					randomizer = random.randint(1,100)
 					if randomizer <= 80:
