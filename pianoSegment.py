@@ -118,7 +118,8 @@ class PianoSegment:
   return a list of notes of line notes type
   """
   def lineNotes(self):
-    return 42
+    self.
+
 
   """
   Set the notes of this segment
