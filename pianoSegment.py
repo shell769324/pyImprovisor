@@ -7,8 +7,6 @@ class PianoSegment:
     self.pitchType = pitchType
     self.rhythmBank = rhythmBank
     self.rhythms = []
-    self.intervals = []
-    self.pitches = []
     self.attacks = []
     self.unitLength = unitLength
     self.genre = genre
@@ -74,13 +72,41 @@ class PianoSegment:
     return self.calculateIntvSim(intv) + self.calculateRhySim(rhy) + self.countDownBeatsNotes(pit)
 
   """
+  Get the nth note time and its duration
+  @param rhythm: the rhythm int list
+  @return a list of tuple (time, duration) where 1/4 note = 120
+  """
+  def getAllNoteTime(self, rhythm):
+    res = []
+    i = 0
+    while(i < len(rhythm)):
+      if(rhythm[i] > 0):
+        start = i
+        i += 1
+        while(i < len(rhythm) and rhythm[i - 1] == rhythm[i]):
+          i += 1
+        res.append((start * 120 / 96, (i - start) * 120 / 96))
+        i -= 1
+      i += 1
+    return res
+
+  """
   return a list of notes of block chords type
   """
-  def blockChordNotes(self):
+  def blockChordNotes(self, rhythm):
     chord = self.chord
     register = ((self.post - 12) // 12) * 12 # the register at least one octave lower than the top
-    third = (chord.getPost("third") + chord.degree()) % 12 + register
-    seventh = (chord.getPost("seventh") + chord.degree()) % 12 + register
+    block = []
+    block.append((chord.getPost("third") + chord.degree()) % 12 + register)
+    block.append((chord.getPost("fifth") + chord.degree()) % 12 + register)
+    res = []
+    if("7" in chord.quality):
+      block.append((chord.getPost("seventh") + chord.degree()) % 12 + register)
+    noteTime = self.getAllNoteTime(rhythm)
+    for i in range(len(noteTime)):
+      for j in range(len(block)):
+        res.append((block[i], noteTime[i][j]))
+
 
   """
   return a list of notes of chordal notes type
@@ -99,10 +125,11 @@ class PianoSegment:
   """
   def setNotes(self, rhythm):
     count = 0
-    self.rhythm = []
+    self.rhythm = rhythm
     self.pitch = []
     self.interval = []
     if(self.prev == None): # The first segment in a phrase
+      if(self.pitchType == "BLOCK"):
 
     else: # The second or other segment in a phrase
 
@@ -112,18 +139,7 @@ class PianoSegment:
   def finalize(self, prev=None, nextNote=-1):
     self.prev = prev
     self.nextNote = nextNote
-    register =
-    for i in range(TRIAL):
-      self.setNotes(self.rhythmBank(self.unitLength, self.genre,
-                                    False, self.dynamics, prev == None))
-    scoreToIndex = []
-    for i in range(len(self.intervals)):
-      score = self.calculateScore(self.intervals[i], self.rhythms[i], self.pitches[i])
-      scoreToIndex.append((score, i))
-    scoreToIndex.sort(reverse=True)
-    distribution = [0, 0, 0, 1, 1, 2]
-    num = random.randint(0, 4)
-    self.rhythm = self.rhythms[num]
-    self.pitch = self.pitches[num]
-    self.interval = self.intervals[num]
-    self.attacks = self.attacks[num]
+    if(self.pitchType == "BLOCK"):
+      self.res = self.blockChordNotes(self.rhythmBank(self.unitLength, self.genre, False,
+                                                      self.dynamics, True))
+    elif(self.pitchType == "LINE"):
