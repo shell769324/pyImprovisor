@@ -1,4 +1,6 @@
-from tkinter import *
+from Tkinter import *
+
+>>>>>>> 1c83a30027eec981af98b62a8d3234b0cf01a381
 import MidiConverter
 import copy
 
@@ -60,11 +62,11 @@ print(inputs)
 # Color Scheme
 ####################################
 
-color1 = "#011935"
-color2 = "#00343F"
-color3 = "#1DB0B8"
-color4 = "#37C6C0"
-color5 = "#D0E9FF"
+color1 = "#9E1313"
+color2 = "#CF1717"
+color3 = "#EB3F3F"
+color4 = "#ED6666"
+color5 = "#FFE3CE"
 
 
 #####################################
