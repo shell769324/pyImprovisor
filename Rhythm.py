@@ -102,7 +102,7 @@ class rhythm:
 	def bassBossa(self):
 
 	def bassBallad(self):
-		randomizer = random.randint(1,100)
+		randomizer = random.randint(1, 100)
 		if randomizer <= 57:
 			return list(EVEN2)
 		elif randomizer > 57 and randomizer <= 62:
@@ -118,13 +118,41 @@ class rhythm:
 		else:
 			return list(DURA6)
 	def bassBop(self):
-		rand
+		randomizer = random.randint(1, 100)
+		if randomizer <= 57:
+			return list(EVEN2)
+		elif randomizer > 57 and randomizer <= 62:
+			return list(EVEN3)
+		elif randomizer > 62 and randomizer <= 67:
+			return list(MIX1)
+		elif randomizer > 67 and randomizer <= 80:
+			return list(DOT1)
+		elif randomizer > 80 and randomizer <= 90:
+			return list(DURA2)
+		elif randomizer > 90 and randomizer <= 95:
+			return list(DURA3)
+		else:
+			return list(DURA7)
+	def bassBlues(self):
+		randomizer = random.randint(1, 100)
+		if randomizer <= 70:
+			return list(EVEN2)
+		elif randomizer > 70 and randomizer <= 80:
+			return list(EVEN3)
+		elif randomizer > 80 and randomizer <= 85:
+			return list(MIX1)
+		elif randomizer > 85 and randomizer <= 90:
+			return list(DURA1)
+		elif randomizer > 90 and randomizer <= 95:
+			return list(DURA2)
+		else:
+			return list(PAUSE2)
 
 	def generateBass(self):
+		Result = []
 		if(GenDic[self.genre] == 4): #Bossa Nova
-			self.bassBossa(self)
+			Result.append(self.bassBossa(self))
 		else:
-			Result = []
 			n = round(1/self.duration)
 			for index in range(1, n): 
 				if (QuarterIndex(self, index) == 0):
