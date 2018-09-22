@@ -1,4 +1,5 @@
 import random
+from segment import Segment
 """
   Create a phrase
   @param chords: a list of Chord objects
@@ -6,11 +7,17 @@ import random
   @param rhythmBank: a rhythmBank
 """
 BASS_VOLUMN_RATIO = 0.8
+LINE_BASIC = {1:5, 2:7, 3:8, 4:10}
+LINE_FREQ = lambda x : LINE_BASIC[x] + random.randint(-2, 2)
+CHORDAL_BASIC = {1:7, 2:8, 3:8, 4:7}
+CHORDAL_FREQ = lambda x : CHORDAL_BASIC[x] + random.randint(-2, 2)
+BLOCK_BASIC = {1:10, 2:7, 3:3, 4:2}
+BLOCK_FREQ = lambda x : BLOCK_BASIC[x] + random.randint(-2, 2)
+
 class Phrase:
 
   def __init__(self, chords, banks, rhythmBank, dynamics, genre, dur):
     self.chords = chords
-    self.segments = [] # A list of list of note, where a note is a tuple
     self.setPost()
     self.banks = banks
     self.rhythmBank = rhythmBank
@@ -80,6 +87,51 @@ class Phrase:
     self.bassHarmony = bassHarmony
 
   """
+  Calculate the density of a rhythm pattern
+  @return: the density of a rhythm
+  """
+  def calculateDensity(self, rhythm):
+    count = 0
+    for i in range(len(rhythm)):
+      if (rhythm[i] > 0):
+        count += 1
+    return count
+
+  """
+  Set the basic pitch type to use
+  including line, chordal notes and block chords
+  line should have the highest frequency overall, followed by chordal notes
+  and block chords should occur from time to time
+  Decision is based on the density of the basic rhythm field
+  """
+  def setPitchTypePiano(self):
+    rou = self.calculateDensity(self.basicPianoRhythm)
+    blockBid = BLOCK_FREQ(rou)
+    chordalBid = CHORDAL_FREQ(rou)
+    lineBid = LINE_FREQ(rou)
+    if(blockBid > chordalBid and blockBid > lineBid):
+      self.pianoPitchType = "BLOCK"
+    elif(chordalBid > lineBid):
+      self.pianoPitchType = "CHORDAL"
+    else:
+      self.pianoPitchType = "LINE"
+
+  """
+  Set the first note of each segment
+  TODOOOOOO: finish the bass line
+  """
+  def setPost(self):
+    segments = []
+    typeOption1 = ["root", "third"]
+    typeOption2 = ["fifth", "seventh"]
+    typeOption3 = ["second"]
+    typeOption = typeOption1 * 3 + typeOption2 * 2 + typeOption3
+    num = random.randint(0, len(typeOption) - 1)
+    for chord in self.chords:
+      segments.append(Segment(chord.getPost(typeOption[num])))
+    self.segments = segments
+
+  """
   Score the new phrase based on
   1) The similarity of rhythmic pattern with the previous phrase
   2) The similarity of interval with the previous phrase
@@ -94,18 +146,17 @@ class Phrase:
     return 42
 
   """
+  For the piano part
   Create a list of segments object using the field Harmony
   Set the nodes of all segments using harmony
   """
-  def setSegments(self):
-    # The first segment should generate notes based on the next note
-    
-    # The other segment should generate notes based on the previous segment and the next note
-
-  """
-  Set the first note of each segment
-  TODOOOOOO: finish the bass line
-  """
-  def setPost(self):
-    for chord in self.chords:
-      self.segments.append([()])
+  def setSegmentsPiano(self):
+    segments = self.segments
+    if(self.pianoPitchType == "BLOCK"):
+      segments.append(Segment())
+      a = 42
+    elif(self.pianoPitchType == "CHORDAL"):
+      a = 42
+    else:
+      a = 42
+    return 42
