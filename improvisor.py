@@ -11,12 +11,14 @@ class Improvisor:
   def __init__(self):
     self.letters = {'C': 0, 'D': 2, 'E': 4, 'F': 5, 'G': 7, 'A': 9, 'B': 11}
     #self.MyMIDI = MIDIFile(1, True, True, False, 1, 120, True)
-    self.banks = {}
+    self.banks = {} # The bank of notes corresponding to a specific chord
+    self.rhythmBank = {}
     self.chords = []
     self.phrases = []
     self.patterns = []
     self.createPatterns()
     self.tempo = 100
+    self.genre = "Bebop"
 
   """
   Return the pitch of a note symbol
@@ -45,7 +47,8 @@ class Improvisor:
   """
   Create a bank of rhythmic patterns
   """
-  def createPatterns(self):
+  def createBanks(self):
+    self.rhythmBank
     return 42
 
   """
@@ -62,25 +65,30 @@ class Improvisor:
   """
   Find out where each phrase begins and end
   Set phrases as a list of list of chords
+  @param dynamics: the average dynamics value
   """
-  def deconstructor(self):
+  def deconstructor(self, dynamics):
     # Determine the content of each phrase
     chords = self.chords
     phrases = []
     sum = 0 # Once sum hits 2, append the phrase to phrases
-    phrase = []
+    chordsInPhrase = []
     for chord in chords:
-      phrase.append(chord)
+      chordsInPhrase.append(chord)
       sum += chord.dur
-      if(math.isclose(sum, 2)):
-        phrases.append(phrase)
-        phrase = []
+      if (math.isclose(sum, 1) and len(chordsInPhrase) >= 3):
+        phrases.append(Phrase(chordsInPhrase, self.banks, self.rhythmBank, dynamics, self.genre))
+        chordsInPhrase = []
+        sum = 0
+      elif(math.isclose(sum, 2) and len(chordsInPhrase) >= 2):
+        phrases.append(Phrase(chordsInPhrase, self.banks, self.rhythmBank, dynamics, self.genre))
+        chordsInPhrase = []
         sum = 0
       elif(math.isclose(sum, 4)):
-        phrases.append(phrase)
-        phrase = []
+        phrases.append(Phrase(chordsInPhrase, self.banks, self.rhythmBank, dynamics, self.genre))
+        chordsInPhrase = []
         sum = 0
-      self.phrases = phrases
+    self.phrases = phrases
 
   """
   Expand the bank that maps chord name to an object that stores
@@ -93,20 +101,6 @@ class Improvisor:
       self.banks[chord.name] = Bank(chord)
 
   """
-  Called after phrases are set.
-  Add the posts of a phrase: the start and the end.
-  Posts will be used to guide the generation of notes between them
-  """
-  def setPosts(self):
-    return 42
-
-  """
-  Generate notes between posts
-  """
-  def fillPosts(selfs):
-    return 42
-
-  """
   Generate the midi file that only contains the chord
   """
   def pureChordsFile(self):
@@ -117,13 +111,14 @@ class Improvisor:
            2) a midi file that solos over the chords
   @param chords: a list of tuples of chord name and duration
   @param tempo: tempo of the solo
+  @param genre: a string specifying the genre
   """
-  def generator(self, chords, tempo = 100):
+  def generator(self, chords, tempo = 100, genre = "bebop"):
     self.tempo = tempo
+    self.genre = genre
     self.sheetIntepretor(chords)
-    self.deconstructor()
     self.expandBanks()
-    self.setPosts()
+    self.deconstructor()
 
   def printChords(self):
     for chord in self.chords:
