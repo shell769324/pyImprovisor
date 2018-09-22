@@ -132,13 +132,13 @@ def init(data):
 	#SharpButton5
 	#FlatButton5
 
-	#Button5
-	#Button7
-	#Button9
-	#Button11
-	#Button13
-	#ButtonM
-	#Buttonm
+	#5Button
+	#7Button
+	#9Button
+	#11Button
+	#13Button
+	#MButton
+	#mButton
 
 def pointInGrid(x, y, data):
 	# return True if (x, y) is inside the grid defined by data.
