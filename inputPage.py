@@ -1,8 +1,9 @@
-from tkinter import *
+from Tkinter import *
 
 
 import MidiConverter
 import copy
+from improvisor import Improvisor
 # from improvisor import Improvisor
 
 
@@ -27,21 +28,12 @@ import copy
 # Variables
 ####################################
 
-<<<<<<< HEAD
 allChords = ["G*m7", NONE, "A*7#9", NONE, "D*m7", "Db*7b5", "C*m7", "F*7b9",
 			 "Bb*M7", NONE, "A*7#9", NONE, "D*m7", NONE, "E*7#5#9", NONE,
 			 "A*m7", NONE, "D*m7", NONE, NONE, NONE, NONE, NONE]
 tempo=80
 songTitle = "Blues"
-=======
-allChords = ["A*m7", None, None, None, None, None, None, None,
-			"C*m7", None, None, None, None, None, None, "F*7",
-			"Bb*M7", None, "Bb*m7", "Eb*7", "Ab*M7", None, "Ab*m7", "Db*7",]
 
-
-tempo=140
-songTitle="New_song0"
->>>>>>> 107f6d8cd011046f31024ff740839f5ec1d1ab23
 inputs = []
 improv = Improvisor()
 
