@@ -6,6 +6,7 @@ class Chord:
     self.setQuality()
     self.setDegree()
     self.setKeyNotes()
+    self.setDegDict()
 
   """
   Set the quality of the chord by its name
@@ -31,10 +32,14 @@ class Chord:
   """
   def setDegree(self):
     letters = {'C': 0, 'D': 2, 'E': 4, 'F': 5, 'G': 7, 'A': 9, 'B': 11}
-    if(len(self.name) == 1): return letters[self.name[0]]
+    if(len(self.name) == 1):
+      self.degree = letters[self.name[0]]
+      return
     name = self.name
     letter = name[0]
-    tweak = -1 if name[1] == 'b' else 1
+    tweak = 0
+    if(name[1] in ['b', '#']):
+      tweak = -1 if name[1] == 'b' else 1
     # Roundabout
     self.degree = (letters[letter] + tweak) % 12
 
@@ -66,30 +71,28 @@ class Chord:
         self.keyNotes.append(9)
 
   """
-  Get a random post 
-  @param type: must be either root, third, fifth, seventh or second
+  Create a dictionary that maps degree in English to degree in midiutil
   """
-  def getPost(self, type):
-    if(type == "third"):
-      if(self.quality in ["M", "M6", "M7"]):
-        return 4
-      else:
-        return 3
-    elif(type == "fifth"):
-      if(self.quality == "m7b5" or 6 in self.keyNotes):
-        return 6
-      elif(8 in self.keyNotes):
-        return 8
-      else:
-        return 7
-    elif(type == "seventh"):
-      if(self.quality in ["M", "M6", "M7"]):
-        return 11
-      else:
-        return 10
-    elif(type == "root"):
-      return 0
-    elif(type == "second"):
-      return 2
-    else:
-      raise ValueError("invalid post type!")
+  def setDegDict(self):
+    degDict = {}
+    quality = self.quality
+    degDict["third"] = 4 if quality in ["M", "M6", "M7", "7"] else 3
+    degDict["fifth"] = (6 if quality == "m7b5" or 6 in self.keyNotes
+                          else 8 if 8 in self.keyNotes else 7)
+    degDict["seventh"] = 11 if quality in ["M", "M6", "M7"] else 10
+    degDict["root"] = 0
+    degDict["second"] = 2
+    self.degDict = degDict
+
+  """
+  Get the absolute pitch of a note specified by the type
+  @param type: either third, seventh, fifth, root or second
+  @param post: the return will be a note of type nearest to post
+  @param up: true if looking for note below post
+  @return the desired note
+  """
+  def getNote(self, type, post, down):
+    res = self.degDict[type] + self.degree
+    while(res < post):
+      res += 12
+    return res - 12 if down else res

@@ -29,10 +29,10 @@ from improvisor import Improvisor
 # Variables
 ####################################
 
-allChords = ["C*7", NONE, "F*7", NONE, "C*7", NONE, "F*7", NONE,
-			 "F*7", NONE, NONE, NONE, "C*7", NONE, NONE, NONE,
-			 "G*7", NONE, "F*7", NONE, "C*7", "A*7", "D*m7", "G*7",]
-tempo=30
+allChords = ["G*m7", NONE, "A*7#9", NONE, "D*m7", "Db*7b5", "C*m7", "F*7b9",
+			 "Bb*M7", NONE, "A*7#9", NONE, "D*m7", NONE, "E*7#5#9", NONE,
+			 "A*m7", NONE, "D*m7", NONE, NONE, NONE, NONE, NONE]
+tempo=80
 songTitle = "Blues"
 inputs = []
 improv = Improvisor()

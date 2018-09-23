@@ -1,3 +1,4 @@
+from __future__ import division
 import random
 
 TRIAL = 3
@@ -85,7 +86,7 @@ class PianoSegment:
         i += 1
         while(i < len(rhythm) and rhythm[i] == -1):
           i += 1
-        res.append((start * 120 / 96, (i - start) * 120 / 96, rhythm[start]))
+        res.append((start * 5, (i - start) * 5, rhythm[start]))
         i -= 1
       i += 1
     return res
@@ -95,14 +96,13 @@ class PianoSegment:
   """
   def blockChordNotes(self, rhythm):
     chord = self.chord
-    register = ((self.post - 12) // 12) * 12 # the register at least one octave lower than the top
-    block = []
-    block.append((chord.getPost("third") + chord.degree) % 12 + register)
-    block.append((chord.getPost("fifth") + chord.degree) % 12 + register)
-    res = []
+    block = [self.post]
+    block.append(chord.getNote("third", self.post, True))
     if("7" in chord.quality):
-      block.append((chord.getPost("seventh") + chord.degree) % 12 + register)
+      block.append(chord.getNote("seventh", self.post, True))
+    block.append(chord.getNote("root", min(block), True))
     noteTime = self.getAllNoteTime(rhythm)
+    res = []
     for i in range(len(noteTime)):
       for j in range(len(block)):
         res.append([block[j], noteTime[i][0], noteTime[i][1], noteTime[i][2]])
@@ -146,9 +146,11 @@ class PianoSegment:
   Finalize decisions
   """
   def finalize(self, prev=None, nextNote=-1):
-    print(self.chord.name + "\n")
     self.prev = prev
     self.nextNote = nextNote
-    if(self.pitchType == "BLOCK"):
+    if(prev == None):
       self.res = self.blockChordNotes(self.rhythmBank.generateRhythm(self.unitLength, self.genre, False,
-                                                      self.dynamics, True))
+                                                                     self.dynamics, True))
+    else:
+      self.res = self.blockChordNotes(self.rhythmBank.generateRhythm(self.unitLength, self.genre, False,
+                                                                     self.dynamics, False))

@@ -118,7 +118,6 @@ class rhythm:
 
 	def assignDynamix(self, original):
 		#adjust dynamix of attacks according to upbeat/downbeat
-		#print(original)
 		assigned = []
 		original2 = []
 		for i in original:
@@ -141,7 +140,6 @@ class rhythm:
 				else:
 					assigned.append(dyn)
 
-		#print(assigned)
 		return assigned
 
 
@@ -151,16 +149,12 @@ class rhythm:
 		resultNum = [0] * 27
 		# if this call is for BR, whether the quarternotes appeared in the BR
 
-		n = (int) (self.duration * 4)
-		#print("n: ")
-		#print(n)
-		#print("\n")
+		n = int(round((self.duration * 4), 0))
 		if(self.br == True):
 			self.cor = list(Correlation)
 			#if this is for BR, initialize self.cor
 		prev = 19
 		for i in range(1, n + 1):
-			#print("I'm in a loop\n")
 			if(self.QuarterIndex(i) == 0):
 				prev = 19
 
@@ -201,7 +195,7 @@ class rhythm:
 
 	def bassBossa(self):
 		Res = []
-		n = round(self.duration/0.25)
+		n = int(round(self.duration * 0.25, 0))
 		for index in range(1, n + 1):
 			if(self.QuarterIndex(index) == 0):
 				Res += list(DOT1)
@@ -234,7 +228,7 @@ class rhythm:
 		elif randomizer > 62 and randomizer <= 67:
 			return list(MIX1)
 		elif randomizer > 67 and randomizer <= 80:
-			return list(TRIP)
+			return list(TRIP1)
 		elif randomizer > 80 and randomizer <= 85:
 			return list(DURA2)
 		elif randomizer > 85 and randomizer <= 90:
@@ -285,7 +279,7 @@ class rhythm:
 		if(GenDic[self.genre] == 4): #Bossa Nova
 			Result.append(self.bassBossa())
 		else:
-			n = self.duration * 4
+			n = int(round(self.duration * 4, 0))
 
 			for index in range(1, n + 1): 
 				if (self.QuarterIndex(index) == 0):
@@ -314,7 +308,6 @@ class rhythm:
 						Result.append(self.bassBop())
 					elif (GenDic[self.genre] == 3): #Blues
 						Result.append(self.bassBlues())
-		#print("generateBass completed\n")
 		return Result 
 
 	def generateRhythmWrapper(self):
@@ -325,12 +318,13 @@ class rhythm:
 
 	def generateRhythm(self, Duration, Genre, Line, Dynamix, BR):
 		# Line: True-Bass; False-Piano
+		self.genre = Genre  # string
+		self.dynamix = Dynamix  # int
+		self.duration = Duration  # double
+		self.br = BR  # boolean
+		self.line = Line  # boolean
 		if(not self.hasInit):
-			self.genre = Genre  # string
-			self.duration = Duration  # double
-			self.line = Line  # boolean
-			self.dynamix = Dynamix  # int
-			self.br = BR  # boolean
 			self.cor = list(Correlation)
-		self.hasInit = True
+		if(BR):
+			self.cor = list(Correlation)
 		return self.generateRhythmWrapper()

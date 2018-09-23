@@ -51,7 +51,6 @@ class Improvisor:
   @param chords: a list of chord symbols
   """
   def sheetIntepretor(self, chords):
-    print(chords)
     temp = []
     for i in range(len(chords)):
       (chord, dur) = chords[i]
@@ -71,12 +70,10 @@ class Improvisor:
     chordsInPhrase = []
     prevPost = 60
     for i in range(len(chords)):
-      chrd = chords[i]
-      chordsInPhrase.append(chrd)
-      sum += chrd.dur
-      print(sum)
+      chord = chords[i]
+      chordsInPhrase.append(chord)
+      sum += chord.dur
       if(numpy.isclose(sum, 1) and len(chordsInPhrase) >= 3):
-        print("here1")
         phrases.append(Phrase(chordsInPhrase, self.banks, self.rhythmBank,
                               dynamics, self.genre, 1, prevPost))
         prevPost = phrases[-1].lastEnd
@@ -108,8 +105,7 @@ class Improvisor:
       local = 0
       for i in range(len(temp)):
         connected.append([temp[i][0], temp[i][1] + currT, temp[i][2], temp[i][3]])
-      currT += temp[-1][1] + temp[-1][2]
-    print(connected)
+      currT += int(round(phrase.dur * 480, 0))
     return connected
 
   """
@@ -117,10 +113,10 @@ class Improvisor:
   all chords, scales and licks that may be useful for improvisation
   """
   def expandBanks(self):
-    for chrd in self.chords:
-      if(chrd.name in self.banks):
+    for chord in self.chords:
+      if(chord.name in self.banks):
         continue
-      self.banks[chrd.name] = Bank(chrd)
+      self.banks[chord.name] = Bank(chord)
 
   """
   Generate the midi file that only contains the chord
@@ -135,8 +131,7 @@ class Improvisor:
   @param tempo: tempo of the solo
   @param genre: a string specifying the genre
   """
-  def generator(self, chords, tempo=100, genre="bebop"):
-    print(type(chords))
+  def generator(self, chords, tempo=100, genre="Ballad"):
     self.tempo = tempo
     self.genre = genre
     self.sheetIntepretor(chords)
@@ -145,14 +140,14 @@ class Improvisor:
     self.connect()
 
   def printchords(self):
-    for chrd in self.chords:
-      print(chrd.quality + " ")
+    for chord in self.chords:
+      print(chord.quality + " ")
     print("\n")
 
   def printPhrases(self):
     for phrase in self.phrases:
-      for chrd in phrase:
-        print(chrd.name + " ")
+      for chord in phrase:
+        print(chord.name + " ")
       print("")
 
 def merge(chords, durs):

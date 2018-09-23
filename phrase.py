@@ -9,11 +9,11 @@ from pianoSegment import PianoSegment
   @param rhythmBank: a rhythmBank
 """
 BASS_VOLUMN_RATIO = 0.8
-LINE_BASIC = {1:5, 2:5, 3:7, 4:7, 5:8, 6:8, 7:10, 8:10, 9:10, 10:10, 11:10, 12:10, 13:10}
+LINE_BASIC = {1:5, 2:7, 3:8, 4:10}
 LINE_FREQ = lambda x : LINE_BASIC[x] + random.randint(-2, 2)
-CHORDAL_BASIC = {1:7, 2:7, 3:8, 4:8, 5:8, 6:8, 7:7, 8:7, 9:7, 10:7, 11:7, 12:7, 13:7}
+CHORDAL_BASIC = {1:7, 2:8, 3:8, 4:7}
 CHORDAL_FREQ = lambda x : CHORDAL_BASIC[x] + random.randint(-2, 2)
-BLOCK_BASIC = {1:10, 2:10, 3:7, 4:7, 5:3, 6:3, 7:2, 8:2, 9:0, 10:0, 11:0, 12:0, 13:0}
+BLOCK_BASIC = {1:10, 2:7, 3:3, 4:0}
 BLOCK_FREQ = lambda x : BLOCK_BASIC[x] + random.randint(-2, 2)
 
 class Phrase:
@@ -38,9 +38,12 @@ class Phrase:
   """
   def setBasicRhythm(self):
     shortest = 100
+    sum = 0
     for chord in self.chords:
       shortest = min(shortest, chord.dur)
-    self.unitLength = shortest ## The number of bar
+      sum += chord.dur
+    self.unitLength = shortest ## The smallest unit
+    self.unitCount = int(round(sum / shortest, 0)) ## The number of units
     self.basicPianoRhythm = self.rhythmBank.generateRhythm(shortest, self.genre, False, self.dynamics, True)
     self.basicBassRhythm = self.rhythmBank.generateRhythm(shortest, self.genre,
                                                           True, self.dynamics * BASS_VOLUMN_RATIO, True)
@@ -54,7 +57,7 @@ class Phrase:
     for i in range(len(rhythm)):
       if (rhythm[i] > 0):
         count += 1
-    return count
+    return int(round(count / (len(rhythm) / 24), 0))
 
   """
   Set the basic pitch type to use
@@ -66,7 +69,6 @@ class Phrase:
   def setPitchTypePiano(self):
     rou = self.calculateDensity(self.basicPianoRhythm)
     # Calculate the bid of each pitch type
-    print("rou: ", rou)
     blockBid = BLOCK_FREQ(rou)
     chordalBid = CHORDAL_FREQ(rou)
     lineBid = LINE_FREQ(rou)
@@ -93,19 +95,19 @@ class Phrase:
     # Relative degree of the [0, 12) of the previous chord
     prevDeg = self.chords[0].degree
     # The absolute degree of the previous chord
-    prevPost = (self.lastEnd // 12) * 12 + self.chords[0].getPost(typeOption[num])
+    prevPost = self.chords[0].getNote(typeOption[num], self.lastEnd, False)
     res = 0
     for chord in self.chords:
       # Two options for the next post
-      higher = (chord.degree + 12 - prevDeg) % 12 + prevPost
-      lower = (chord.degree + 12 - prevDeg) % 12 + prevPost - 12
+      higher = chord.getNote(typeOption[num], prevPost, False)
+      lower = chord.getNote(typeOption[num], prevPost, True)
       res = 0 # The actual absolute degree of the post of the current segment
       if(higher >= 84):
         res = lower
-      elif(lower <= 48):
+      elif(self.pianoPitchType == "BLOCK" and lower <= 60 or lower <= 48):
         res = higher
       else:
-        res = lower if random.randint(0, 1) == 1 else higher
+        res = higher if (random.randint(0, 1) == 1) else lower
       # Create a new segment with a post
       pianoSegments.append(PianoSegment(res, self.pianoPitchType, self.rhythmBank, self.unitLength,
                                         self.genre, self.dynamics, self.banks, chord))
@@ -123,8 +125,8 @@ class Phrase:
   def setSegmentsPiano(self):
     pianoSegments = self.pianoSegments
     pianoSegments[0].finalize(None, pianoSegments[1].post)
-    for i in range(1, (int) (round(self.dur // self.unitLength))):
-      nextNote = pianoSegments[i + 1].post if i != (int) (round(self.dur // self.unitLength)) - 1 else -1
+    for i in range(1, self.unitCount):
+      nextNote = pianoSegments[i + 1].post if i != self.unitCount - 1 else -1
       pianoSegments[i].finalize(pianoSegments[i - 1], nextNote)
 
   """
@@ -139,5 +141,5 @@ class Phrase:
       local = 0
       for i in range(len(temp)):
         connected.append([temp[i][0], temp[i][1] + currT, temp[i][2], temp[i][3]])
-      currT += temp[-1][1] + temp[-1][2]
+      currT += int(round(self.unitLength * 480, 0))
     self.res = connected
