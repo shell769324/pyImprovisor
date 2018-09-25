@@ -57,7 +57,7 @@ class Rhythm1:
   def setBlockPara(self):
     self.blockIdx = [FULL2, ENDP1, ENDP2, ENDP6, CONN1]
     blockFirstWeight = [4, 4, 0, 0, 0]
-    blockTransition = [[0, 3, 5, 3, 3],
+    blockTransition = [[0, 3, 5, 5, 3],
                        [3, 1, 4, 2, 0],
                        [0, 3, 4, 2, 2],
                        [4, 4, 2, 0, 0],

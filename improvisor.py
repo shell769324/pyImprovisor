@@ -5,6 +5,7 @@ from chord import Chord
 from phrase import Phrase
 import numpy
 from rhythm1 import Rhythm1
+import random
 
 OCTAVE = 12
 
@@ -68,7 +69,7 @@ class Improvisor:
     phrases = []
     sum = 0 # Once sum hits 2, append the phrase to phrases
     chordsInPhrase = []
-    prevPost = 60
+    prevPost = random.randint(60, 70)
     for chord in chords:
       chordsInPhrase.append(chord)
       sum += chord.dur

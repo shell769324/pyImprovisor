@@ -84,10 +84,8 @@ class Phrase:
     typeOption3 = ["second"]
     typeOption = typeOption1 * 3 + typeOption2 * 2 + typeOption3
     num = random.randint(0, len(typeOption) - 1)
-    # Relative degree of the [0, 12) of the previous chord
-    prevDeg = self.chords[0].degree
     # The absolute degree of the previous chord
-    prevPost = self.chords[0].getNote(typeOption[num], self.lastEnd, False)
+    prevPost = self.lastEnd
     res = 0
     i = 0
     currDur = 0
@@ -105,7 +103,7 @@ class Phrase:
         currDur = 0
         i = i + 1
     self.pianoSegments = pianoSegments
-    self.lastEnd = res + 12 if res <= 60 else res
+    self.lastEnd = res + 5 if res <= 60 else res
 
   """
   For the piano part
