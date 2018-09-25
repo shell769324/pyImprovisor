@@ -1,6 +1,6 @@
 from __future__ import division
 import random
-import math
+import numpy
 from pianoSegment import PianoSegment
 """
   Create a phrase
@@ -26,17 +26,16 @@ class Phrase:
     self.genre = genre
     self.dur = dur
     self.lastEnd = lastEnd
-    self.setBasicRhythm()
+    self.setUnitLength()
     self.setPitchTypePiano()
     self.setPostPiano()
     self.setSegmentsPiano()
     self.connectSegments()
 
   """
-  Set the basic rhythms of piano and bass, used by the first segment
-  Set the unit length
+  Set the unit length and unit count
   """
-  def setBasicRhythm(self):
+  def setUnitLength(self):
     shortest = 100
     sum = 0
     for chord in self.chords:
@@ -44,9 +43,6 @@ class Phrase:
       sum += chord.dur
     self.unitLength = shortest ## The smallest unit
     self.unitCount = int(round(sum / shortest, 0)) ## The number of units
-    self.basicPianoRhythm = self.rhythmBank.generateRhythm(shortest, self.genre, False, self.dynamics, True)
-    self.basicBassRhythm = self.rhythmBank.generateRhythm(shortest, self.genre,
-                                                          True, self.dynamics * BASS_VOLUMN_RATIO, True)
 
   """
   Calculate the density of a rhythm pattern
@@ -67,15 +63,11 @@ class Phrase:
   Decision is based on the density of the basic rhythm field
   """
   def setPitchTypePiano(self):
-    rou = self.calculateDensity(self.basicPianoRhythm)
-    # Calculate the bid of each pitch type
-    blockBid = BLOCK_FREQ(rou)
-    chordalBid = CHORDAL_FREQ(rou)
-    lineBid = LINE_FREQ(rou)
+    num = random.uniform(0, 1)
     # Determine the pitch type to use
-    if(blockBid > chordalBid and blockBid > lineBid):
+    if(num < 0.2):
       self.pianoPitchType = "BLOCK"
-    elif(chordalBid > lineBid):
+    elif(num < 0.55):
       self.pianoPitchType = "CHORDAL"
     else:
       self.pianoPitchType = "LINE"
@@ -97,25 +89,23 @@ class Phrase:
     # The absolute degree of the previous chord
     prevPost = self.chords[0].getNote(typeOption[num], self.lastEnd, False)
     res = 0
-    for chord in self.chords:
-      # Two options for the next post
-      higher = chord.getNote(typeOption[num], prevPost, False)
-      lower = chord.getNote(typeOption[num], prevPost, True)
-      res = 0 # The actual absolute degree of the post of the current segment
-      if(higher >= 84):
-        res = lower
-      elif(self.pianoPitchType == "BLOCK" and lower <= 60 or lower <= 48):
-        res = higher
-      else:
-        res = higher if (random.randint(0, 1) == 1) else lower
+    i = 0
+    currDur = 0
+    while(i < len(self.chords)):
+      chord = self.chords[i]
+      res = chord.getClosestStable(prevPost)
       # Create a new segment with a post
       pianoSegments.append(PianoSegment(res, self.pianoPitchType, self.rhythmBank, self.unitLength,
                                         self.genre, self.dynamics, self.banks, chord))
       # Prep for the next iteration
       prevDeg = chord.degree
       prevPost = res
+      currDur += self.unitLength
+      if(numpy.isclose(currDur, chord.dur)):
+        currDur = 0
+        i = i + 1
     self.pianoSegments = pianoSegments
-    self.lastEnd = res
+    self.lastEnd = res + 12 if res <= 60 else res
 
   """
   For the piano part
@@ -125,6 +115,7 @@ class Phrase:
   def setSegmentsPiano(self):
     pianoSegments = self.pianoSegments
     pianoSegments[0].finalize(None, pianoSegments[1].post)
+    print(self.unitCount)
     for i in range(1, self.unitCount):
       nextNote = pianoSegments[i + 1].post if i != self.unitCount - 1 else -1
       pianoSegments[i].finalize(pianoSegments[i - 1], nextNote)

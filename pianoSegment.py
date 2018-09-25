@@ -1,6 +1,6 @@
 from __future__ import division
 import random
-import bank
+import math
 
 TRIAL = 3
 class PianoSegment:
@@ -53,12 +53,7 @@ class PianoSegment:
     return top / (prevMag * currMag) ** 0.5
 
   """
-<<<<<<< HEAD
   Check stable notes and key notes
-=======
-  Check stable notes and key notes in downbeats
-  self.chord.degree in 0-11 
->>>>>>> 107f6d8cd011046f31024ff740839f5ec1d1ab23
   """
   def countDownBeatsNotes(self, pit):
     count = 0
@@ -107,10 +102,13 @@ class PianoSegment:
   def blockChordNotes(self, rhythm):
     chord = self.chord
     block = [self.post]
-    block.append(chord.getNote("third", self.post, True))
-    if("7" in chord.quality):
-      block.append(chord.getNote("seventh", self.post, True))
-    block.append(chord.getNote("root", min(block), True))
+    third = chord.getNote("third", self.post, True)
+    if(abs(self.post - third) != 12 or third > 48):
+      block.append(third)
+    seventh = chord.getNote("seventh", self.post - 3, True)
+    if("7" in chord.quality and (abs(self.post - third) != 12 or seventh > 48)):
+      block.append(seventh)
+    block.append(chord.getNote("root", 48, True))
     noteTime = self.getAllNoteTime(rhythm)
     res = []
     for i in range(len(noteTime)):
@@ -248,8 +246,8 @@ class PianoSegment:
     self.prev = prev
     self.nextNote = nextNote
     if(prev == None):
-      self.res = self.blockChordNotes(self.rhythmBank.generateRhythm(self.unitLength, self.genre, False,
-                                                                     self.dynamics, True))
+      self.res = self.blockChordNotes(self.rhythmBank.generateRhythm(self.unitLength, self.dynamics,
+                                                                     "BLOCK", True))
     else:
-      self.res = self.blockChordNotes(self.rhythmBank.generateRhythm(self.unitLength, self.genre, False,
-                                                                     self.dynamics, False))
+      self.res = self.blockChordNotes(self.rhythmBank.generateRhythm(self.unitLength, self.dynamics,
+                                                                     "BLOCK", False))

@@ -28,9 +28,9 @@ from improvisor import Improvisor
 # Variables
 ####################################
 
-allChords = ["G*m7", NONE, "A*7#9", NONE, "D*m7", "Db*7b5", "C*m7", "F*7b9",
-			 "Bb*M7", NONE, "A*7#9", NONE, "D*m7", NONE, "E*7#5#9", NONE,
-			 "A*m7", NONE, "D*m7", NONE, NONE, NONE, NONE, NONE]
+allChords = ["C*7", None, "F*7", None, "C*7", None, None, None,
+			 "F*7", None, None, None, "C*7", None, None, None,
+			 "G*7", None, "F*7", None, "C*7", "A*7", "D*m7", "G*7"]
 tempo=80
 songTitle = "Blues"
 
@@ -46,12 +46,13 @@ def compileInputs(allChords):
 	for chord in tempChords:
 		if chord != None:
 			count = count + 1
-			if thisChord != "": 
+			if thisChord != "":
 				inputs.append((thisChord, 0.5*count))
 			thisChord = chord
 			count = 0
 		else:
 			count = count + 1
+	inputs.append((thisChord, 0.5 * (count + 1)))
 	return True
 
 compileInputs(allChords)
@@ -361,11 +362,7 @@ def mousePressed(event, data):
 	# if on the renderpage and we pressed the playing position, play music 
 	if data.renderflag == True:
 		if ((100 < event.x < 200) and (500 < event.y < 600)):
-<<<<<<< HEAD
 			A=MidiConverter.MidiConverter(tempo,0,0,1)     #First create the class, then initialize it, then add notes as you want, then write them.
-=======
-			A=MidiConverter.MidiConverter(tempo,0,0,1)     #First create the class, then initialize it, then add notes as you want, then write them. 
->>>>>>> 107f6d8cd011046f31024ff740839f5ec1d1ab23
 			A.initialize()
 			improv.generator(inputs)
 			A.addNotes(improv.connect())	#midi info from bobby
@@ -498,7 +495,6 @@ def runInputPage(width=400, height=600):
 
 	root.mainloop()  # blocks until window closed
 
-	print(inputs)
 	print("bye!")
 
 

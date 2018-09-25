@@ -96,3 +96,17 @@ class Chord:
     while(res < post):
       res += 12
     return res - 12 if down else res
+
+  """
+  Get the closest third, seventh or second
+  """
+  def getClosestStable(self, post):
+    notes = []
+    for name in list(self.degDict.keys()):
+      notes.append(self.getNote(name, post, False))
+      notes.append(self.getNote(name, post, True))
+    good = []
+    for note in notes:
+      if note <= post:
+        good.append(note)
+    return max(good)

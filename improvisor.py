@@ -4,7 +4,7 @@ from bank import Bank
 from chord import Chord
 from phrase import Phrase
 import numpy
-from Rhythm import rhythm
+from rhythm1 import Rhythm1
 
 OCTAVE = 12
 
@@ -14,7 +14,7 @@ class Improvisor:
     self.letters = {'C': 0, 'D': 2, 'E': 4, 'F': 5, 'G': 7, 'A': 9, 'B': 11}
     #self.MyMIDI = MIDIFile(1, True, True, False, 1, 120, True)
     self.banks = {} # The bank of notes corresponding to a specific chord
-    self.rhythmBank = rhythm()
+    self.rhythmBank = Rhythm1()
     self.chords = []
     self.phrases = []
     self.patterns = []
@@ -69,8 +69,7 @@ class Improvisor:
     sum = 0 # Once sum hits 2, append the phrase to phrases
     chordsInPhrase = []
     prevPost = 60
-    for i in range(len(chords)):
-      chord = chords[i]
+    for chord in chords:
       chordsInPhrase.append(chord)
       sum += chord.dur
       if(numpy.isclose(sum, 1) and len(chordsInPhrase) >= 3):
